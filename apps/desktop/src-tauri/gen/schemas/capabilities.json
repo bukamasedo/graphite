@@ -1,1 +1,0 @@
-{"default":{"identifier":"default","description":"Default capabilities for the main window","local":true,"windows":["main"],"permissions":["core:default","shell:allow-open","core:menu:default","updater:default","dialog:default"]}}

@@ -1,0 +1,381 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../fonts/InterVariable.woff2") format("woff2");
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+  font-size: 13px;
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--text-muted);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+::selection {
+  background: var(--accent-color);
+  color: white;
+}
+
+input,
+textarea,
+button {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+a {
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ── Tiptap Editor — GitHub Dark style ─────────────────── */
+
+.tiptap-editor .ProseMirror {
+  outline: none;
+  color: var(--text-primary);
+  line-height: var(--editor-line-height, 1.7);
+  caret-color: var(--accent-color);
+  min-height: 100%;
+}
+
+.tiptap-editor .ProseMirror ::selection {
+  background: #264f78;
+}
+
+.tiptap-editor .ProseMirror h1,
+.tiptap-editor .ProseMirror h2,
+.tiptap-editor .ProseMirror h3,
+.tiptap-editor .ProseMirror h4,
+.tiptap-editor .ProseMirror h5,
+.tiptap-editor .ProseMirror h6 {
+  font-weight: 600;
+  margin-top: 24px;
+  margin-bottom: 16px;
+  line-height: 1.25;
+}
+
+.tiptap-editor .ProseMirror h1 {
+  font-size: 2em;
+}
+.tiptap-editor .ProseMirror h2 {
+  font-size: 1.5em;
+}
+.tiptap-editor .ProseMirror h3 {
+  font-size: 1.25em;
+}
+.tiptap-editor .ProseMirror h4 {
+  font-size: 1em;
+}
+.tiptap-editor .ProseMirror h5 {
+  font-size: 0.875em;
+}
+.tiptap-editor .ProseMirror h6 {
+  font-size: 0.85em;
+  color: var(--text-secondary);
+}
+
+.tiptap-editor .ProseMirror p {
+  margin-top: 0;
+  margin-bottom: 6px;
+}
+
+.tiptap-editor .ProseMirror strong {
+  font-weight: 600;
+}
+.tiptap-editor .ProseMirror em {
+  font-style: italic;
+}
+.tiptap-editor .ProseMirror del {
+  text-decoration: line-through;
+}
+
+/* Links */
+.tiptap-editor .ProseMirror a,
+.tiptap-editor .ProseMirror .tiptap-link {
+  color: var(--accent-color);
+  text-decoration: none;
+  cursor: text;
+}
+
+.tiptap-editor .ProseMirror a:hover,
+.tiptap-editor .ProseMirror .tiptap-link:hover {
+  text-decoration: underline;
+}
+
+/* Inline code */
+.tiptap-editor .ProseMirror code:not(pre code) {
+  font-family: var(--font-mono);
+  font-size: 85%;
+  background: var(--code-inline-bg);
+  padding: 0.2em 0.4em;
+  border-radius: 6px;
+}
+
+/* Code blocks */
+.tiptap-editor .ProseMirror pre {
+  background: var(--code-bg);
+  border-radius: 6px;
+  padding: 16px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+}
+
+.tiptap-editor .ProseMirror pre code {
+  font-family: var(--font-mono);
+  font-size: 85%;
+  background: none;
+  padding: 0;
+  color: var(--text-primary);
+  line-height: 1.45;
+}
+
+/* Blockquotes */
+.tiptap-editor .ProseMirror blockquote {
+  border-left: 0.25em solid var(--border-color);
+  padding: 0 1em;
+  margin: 0 0 16px;
+  color: var(--text-secondary);
+}
+
+.tiptap-editor .ProseMirror blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+/* Lists */
+.tiptap-editor .ProseMirror ul,
+.tiptap-editor .ProseMirror ol {
+  padding-left: 2em;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.tiptap-editor .ProseMirror ul {
+  list-style-type: disc;
+}
+.tiptap-editor .ProseMirror ol {
+  list-style-type: decimal;
+}
+
+.tiptap-editor .ProseMirror ol ol,
+.tiptap-editor .ProseMirror ul ol {
+  list-style-type: lower-roman;
+}
+
+.tiptap-editor .ProseMirror ul ul {
+  list-style-type: circle;
+}
+.tiptap-editor .ProseMirror ul ul ul {
+  list-style-type: square;
+}
+
+.tiptap-editor .ProseMirror li {
+  margin-top: 0.25em;
+}
+.tiptap-editor .ProseMirror li > p {
+  margin-top: 16px;
+}
+
+/* Task list */
+.tiptap-editor .ProseMirror ul[data-type="taskList"] {
+  list-style: none;
+  padding-left: 0;
+}
+
+.tiptap-editor .ProseMirror ul[data-type="taskList"] li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5em;
+}
+
+.tiptap-editor .ProseMirror ul[data-type="taskList"] li > label {
+  flex: 0 0 auto;
+  margin-top: 0.25em;
+}
+
+.tiptap-editor .ProseMirror ul[data-type="taskList"] li > div {
+  flex: 1;
+}
+
+.tiptap-editor .ProseMirror ul[data-type="taskList"] input[type="checkbox"] {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  cursor: pointer;
+  background: transparent;
+  position: relative;
+}
+
+.tiptap-editor
+  .ProseMirror
+  ul[data-type="taskList"]
+  input[type="checkbox"]:checked {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+}
+
+.tiptap-editor
+  .ProseMirror
+  ul[data-type="taskList"]
+  input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 1px;
+  width: 5px;
+  height: 9px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.tiptap-editor
+  .ProseMirror
+  ul[data-type="taskList"]
+  li[data-checked="true"]
+  > div {
+  text-decoration: line-through;
+  color: var(--text-secondary);
+}
+
+/* Horizontal rule */
+.tiptap-editor .ProseMirror hr {
+  border: 0;
+  background-color: var(--border-color);
+  height: 0.25em;
+  margin: 24px 0;
+}
+
+/* Tables */
+.tiptap-editor .ProseMirror table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 16px;
+}
+
+.tiptap-editor .ProseMirror th,
+.tiptap-editor .ProseMirror td {
+  border: 1px solid var(--border-color);
+  padding: 6px 13px;
+  text-align: left;
+}
+
+.tiptap-editor .ProseMirror th {
+  font-weight: 600;
+}
+
+.tiptap-editor .ProseMirror tr {
+  background-color: var(--bg-primary);
+  border-top: 1px solid var(--border-light);
+}
+
+.tiptap-editor .ProseMirror tr:nth-child(2n) {
+  background-color: var(--bg-tertiary);
+}
+
+/* Images */
+.tiptap-editor .ProseMirror img {
+  max-width: 100%;
+  box-sizing: content-box;
+}
+
+/* Placeholder */
+.tiptap-editor .ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: var(--text-muted);
+  pointer-events: none;
+  height: 0;
+}
+
+/* Wiki links in editor */
+.tiptap-editor .ProseMirror .wiki-link-inline {
+  color: var(--accent-color);
+  text-decoration: none;
+  border-bottom: 1px dashed var(--accent-color);
+  cursor: pointer;
+}
+
+.tiptap-editor .ProseMirror .wiki-link-inline:hover {
+  border-bottom-style: solid;
+}
+
+/* Math decorations */
+.tiptap-editor .ProseMirror .math-source {
+  font-family: var(--font-mono);
+  font-size: 90%;
+  background: var(--code-inline-bg);
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+}
+
+.tiptap-editor .ProseMirror .math-inline-highlight {
+  font-family: var(--font-mono);
+  font-size: 90%;
+  color: #c792ea;
+  background: rgba(199, 146, 234, 0.08);
+  padding: 0.1em 0.2em;
+  border-radius: 3px;
+}
+
+.tiptap-editor .ProseMirror .math-block-highlight {
+  font-family: var(--font-mono);
+  font-size: 90%;
+  color: #c792ea;
+  background: rgba(199, 146, 234, 0.06);
+  padding: 0.1em 0.2em;
+  border-radius: 3px;
+  display: inline;
+}
+
+/* Mermaid diagrams in editor */
+.tiptap-editor .ProseMirror .mermaid-diagram {
+  display: flex;
+  justify-content: center;
+  margin: 16px 0;
+}
+
+.tiptap-editor .ProseMirror .mermaid-diagram svg {
+  max-width: 100%;
+}

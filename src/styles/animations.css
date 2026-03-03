@@ -1,0 +1,113 @@
+/* ── Easing tokens ─────────────────── */
+:root {
+  --ease-smooth: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --ease-out: ease-out;
+  --duration-fast: 100ms;
+  --duration-normal: 150ms;
+  --duration-slow: 200ms;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn var(--duration-slow) var(--ease-smooth);
+}
+
+.animate-slide-down {
+  animation: slideDown var(--duration-slow) var(--ease-smooth);
+}
+
+.animate-slide-up {
+  animation: slideUp var(--duration-slow) var(--ease-smooth);
+}
+
+.animate-scale-in {
+  animation: scaleIn var(--duration-slow) var(--ease-smooth);
+}
+
+/* Resize handle styles */
+[data-panel-group-direction="horizontal"] > [data-resize-handle] {
+  transition: background-color var(--duration-normal) var(--ease-out);
+}
+
+/* KaTeX overrides for dark theme */
+.tiptap-editor .katex {
+  color: var(--text-primary);
+}
+
+/* highlight.js dark theme overrides */
+.tiptap-editor .hljs {
+  background: transparent;
+  color: #e0e0e0;
+}
+.tiptap-editor .hljs-keyword {
+  color: #c792ea;
+}
+.tiptap-editor .hljs-string {
+  color: #c3e88d;
+}
+.tiptap-editor .hljs-number {
+  color: #f78c6c;
+}
+.tiptap-editor .hljs-built_in {
+  color: #82aaff;
+}
+.tiptap-editor .hljs-function {
+  color: #82aaff;
+}
+.tiptap-editor .hljs-comment {
+  color: #555;
+  font-style: italic;
+}
+.tiptap-editor .hljs-title {
+  color: #ffcb6b;
+}
+.tiptap-editor .hljs-attr {
+  color: #f07178;
+}
+.tiptap-editor .hljs-params {
+  color: #e0e0e0;
+}
+.tiptap-editor .hljs-type {
+  color: #ffcb6b;
+}
