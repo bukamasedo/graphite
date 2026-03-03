@@ -1,0 +1,56 @@
+:root {
+  --bg-primary: #121212;
+  --bg-secondary: #0f0f10;
+  --bg-tertiary: #1b1c1d;
+  --bg-hover: rgba(255, 255, 255, 0.05);
+  --bg-active: rgba(255, 255, 255, 0.08);
+
+  --text-primary: #eeeff1;
+  --text-secondary: #cccccc;
+  --text-muted: #666666;
+
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-light: rgba(255, 255, 255, 0.06);
+
+  --accent-color: #5e6ad2;
+  --accent-hover: #848cd0;
+
+  --sidebar-bg: #0f0f10;
+  --notelist-bg: #121212;
+  --editor-bg: #121212;
+  --input-bg: #171717;
+
+  --code-bg: #1b1c1d;
+  --code-inline-bg: rgba(255, 255, 255, 0.06);
+
+  --titlebar-height: 40px;
+
+  --font-sans: 'Inter', 'Inter Variable', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+
+  /* shadcn/ui token aliases */
+  --background: var(--bg-primary);
+  --foreground: var(--text-primary);
+  --card: var(--bg-tertiary);
+  --card-foreground: var(--text-primary);
+  --popover: var(--bg-tertiary);
+  --popover-foreground: var(--text-primary);
+  --primary: var(--accent-color);
+  --primary-foreground: #ffffff;
+  --secondary: var(--bg-hover);
+  --secondary-foreground: var(--text-primary);
+  --muted: var(--bg-tertiary);
+  --muted-foreground: var(--text-secondary);
+  --accent: var(--bg-active);
+  --accent-foreground: var(--text-primary);
+  --destructive: #e5534b;
+  --destructive-foreground: #ffffff;
+  --border: var(--border-color);
+  --input: var(--border-color);
+  --ring: var(--accent-color);
+  --radius: 6px;
+}

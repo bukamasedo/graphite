@@ -1,0 +1,12 @@
+{
+  "name": "@graphite/root",
+  "private": true,
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild"]
+  },
+  "scripts": {
+    "dev": "pnpm --filter @graphite/desktop tauri dev",
+    "build": "pnpm --filter @graphite/desktop tauri build",
+    "dev:mcp": "pnpm --filter @graphite/mcp-server dev"
+  }
+}

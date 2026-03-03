@@ -1,0 +1,112 @@
+import { useTranslation } from 'react-i18next';
+import { useAppStore } from '@/stores/app-store';
+import { useHistoryStore } from '@/stores/history-store';
+import { PanelLeft, Columns2, PanelRight, ChevronLeft, ChevronRight, Clock } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
+import { Shortcut } from '@/components/ui/kbd';
+import { HistoryPopover } from '@/components/layout/history-popover';
+import { commandRegistry } from '@/lib/commands/registry';
+
+export function TitleBar() {
+  const { t } = useTranslation();
+  const viewMode = useAppStore((s) => s.viewMode);
+  const toggleSidebar = useAppStore((s) => s.toggleSidebar);
+  const toggleNoteList = useAppStore((s) => s.toggleNoteList);
+  const toggleNoteInfo = useAppStore((s) => s.toggleNoteInfo);
+  const canGoBack = useHistoryStore((s) => s.canGoBack());
+  const canGoForward = useHistoryStore((s) => s.canGoForward());
+
+  const handleBack = () => commandRegistry.execute('history:back');
+  const handleForward = () => commandRegistry.execute('history:forward');
+
+  return (
+    <div
+      data-tauri-drag-region
+      className="fixed top-0 left-0 right-0 flex items-center select-none"
+      style={{
+        height: 'var(--titlebar-height)',
+        background: 'transparent',
+        zIndex: 50,
+        paddingLeft: 74,
+        paddingRight: 12,
+      }}
+    >
+      {/* Navigation (left) — hidden in settings mode */}
+      {viewMode !== 'settings' && (
+        <div className="flex items-center gap-0.5">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                className="text-text-muted hover:text-text-secondary disabled:opacity-30 disabled:pointer-events-none"
+                onClick={handleBack}
+                disabled={!canGoBack}
+              >
+                <ChevronLeft size={15} />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{t('titleBar.back')} <Shortcut keys={["Mod", "["]} /></TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                className="text-text-muted hover:text-text-secondary disabled:opacity-30 disabled:pointer-events-none"
+                onClick={handleForward}
+                disabled={!canGoForward}
+              >
+                <ChevronRight size={15} />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{t('titleBar.forward')} <Shortcut keys={["Mod", "]"]} /></TooltipContent>
+          </Tooltip>
+          <HistoryPopover>
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              className="text-text-muted hover:text-text-secondary"
+            >
+              <Clock size={15} />
+            </Button>
+          </HistoryPopover>
+        </div>
+      )}
+
+      {/* Drag region */}
+      <div className="flex-1" data-tauri-drag-region />
+
+      {/* Actions (right) — hidden in settings mode */}
+      {viewMode !== 'settings' && (
+        <div className="flex items-center gap-0.5">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon-sm" className="text-text-muted hover:text-text-secondary" onClick={toggleSidebar}>
+                <PanelLeft size={15} />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{t('titleBar.toggleSidebar')} <Shortcut keys={["Mod", "1"]} /></TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon-sm" className="text-text-muted hover:text-text-secondary" onClick={toggleNoteList}>
+                <Columns2 size={15} />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{t('titleBar.toggleNoteList')} <Shortcut keys={["Mod", "2"]} /></TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon-sm" className="text-text-muted hover:text-text-secondary" onClick={toggleNoteInfo}>
+                <PanelRight size={15} />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{t('titleBar.toggleNoteInfo')} <Shortcut keys={["Mod", "3"]} /></TooltipContent>
+          </Tooltip>
+        </div>
+      )}
+    </div>
+  );
+}

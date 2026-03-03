@@ -1,0 +1,50 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nicedoc/tauri-schema/main/tauri.schema.json",
+  "productName": "Graphite",
+  "mainBinaryName": "Graphite",
+  "version": "0.1.0",
+  "identifier": "com.graphite.app",
+  "build": {
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:1420",
+    "beforeDevCommand": "pnpm dev",
+    "beforeBuildCommand": "pnpm build"
+  },
+  "app": {
+    "macOSPrivateApi": true,
+    "windows": [
+      {
+        "title": "Graphite",
+        "width": 1200,
+        "height": 800,
+        "minWidth": 600,
+        "minHeight": 400,
+        "transparent": true,
+        "decorations": true,
+        "titleBarStyle": "Overlay",
+        "hiddenTitle": true,
+        "dragDropEnabled": false
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "plugins": {
+    "updater": {
+      "endpoints": [],
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEQ4NUM4QjdDMEZBMEQ2NjcKUldSbjFxQVBmSXRjMkRkT2pEUkJBdEI1YWJwYm85QjQrODd0WTlmSjhJYWtUQi91WDNJQmpxVEsK"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ]
+  }
+}
