@@ -17,6 +17,11 @@ export const COMMAND_GROUPS: {
     prefix: '',
   },
   {
+    label: 'commandGroups.folder',
+    description: 'commandGroups.folderDesc',
+    prefix: 'folder:',
+  },
+  {
     label: 'commandGroups.note',
     description: 'commandGroups.noteDesc',
     prefix: 'note:',
@@ -25,11 +30,6 @@ export const COMMAND_GROUPS: {
     label: 'commandGroups.editor',
     description: 'commandGroups.editorDesc',
     prefix: 'editor:',
-  },
-  {
-    label: 'commandGroups.folder',
-    description: 'commandGroups.folderDesc',
-    prefix: 'folder:',
   },
   {
     label: 'commandGroups.trash',

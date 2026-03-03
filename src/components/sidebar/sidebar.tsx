@@ -317,7 +317,7 @@ function NotesSidebar() {
             <Button
               variant="ghost"
               size="xs"
-              className="w-full justify-start"
+              className="w-full justify-start text-[13px] px-2"
               onClick={enterSettings}
             >
               <Settings size={14} />

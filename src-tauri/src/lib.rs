@@ -57,9 +57,15 @@ fn set_traffic_light_position(window: &tauri::WebviewWindow, x: f64, y_from_top:
 struct MenuLabels {
     file: String,
     new_note: String,
-    move_to_trash: String,
-    open_trash: String,
+    new_folder: String,
+    reload: String,
     edit: String,
+    undo: String,
+    redo: String,
+    cut: String,
+    copy: String,
+    paste: String,
+    select_all: String,
     view: String,
     command_palette: String,
     search_notes: String,
@@ -67,7 +73,15 @@ struct MenuLabels {
     history_back: String,
     history_forward: String,
     show_history: String,
+    about: String,
+    hide: String,
+    hide_others: String,
+    show_all: String,
+    quit: String,
     window: String,
+    minimize: String,
+    zoom: String,
+    close: String,
     settings: String,
 }
 
@@ -76,9 +90,15 @@ impl Default for MenuLabels {
         Self {
             file: "File".to_string(),
             new_note: "New Note".to_string(),
-            move_to_trash: "Move to Trash".to_string(),
-            open_trash: "Open Trash...".to_string(),
+            new_folder: "New Folder".to_string(),
+            reload: "Reload".to_string(),
             edit: "Edit".to_string(),
+            undo: "Undo".to_string(),
+            redo: "Redo".to_string(),
+            cut: "Cut".to_string(),
+            copy: "Copy".to_string(),
+            paste: "Paste".to_string(),
+            select_all: "Select All".to_string(),
             view: "View".to_string(),
             command_palette: "Command Palette".to_string(),
             search_notes: "Search Notes".to_string(),
@@ -86,7 +106,15 @@ impl Default for MenuLabels {
             history_back: "Back".to_string(),
             history_forward: "Forward".to_string(),
             show_history: "Show History".to_string(),
+            about: "About Graphite".to_string(),
+            hide: "Hide Graphite".to_string(),
+            hide_others: "Hide Others".to_string(),
+            show_all: "Show All".to_string(),
+            quit: "Quit Graphite".to_string(),
             window: "Window".to_string(),
+            minimize: "Minimize".to_string(),
+            zoom: "Zoom".to_string(),
+            close: "Close".to_string(),
             settings: "Settings...".to_string(),
         }
     }
@@ -94,37 +122,37 @@ impl Default for MenuLabels {
 
 fn build_menu_with_labels(handle: &AppHandle, labels: &MenuLabels) -> Result<Menu<tauri::Wry>, Box<dyn std::error::Error>> {
     let app_menu = Submenu::with_items(handle, "Graphite", true, &[
-        &PredefinedMenuItem::about(handle, None, None)?,
+        &PredefinedMenuItem::about(handle, Some(&labels.about), None)?,
         &PredefinedMenuItem::separator(handle)?,
         &MenuItem::with_id(handle, "app:open-settings", &labels.settings, true, Some("CmdOrCtrl+,"))?,
         &PredefinedMenuItem::separator(handle)?,
-        &PredefinedMenuItem::hide(handle, None)?,
-        &PredefinedMenuItem::hide_others(handle, None)?,
-        &PredefinedMenuItem::show_all(handle, None)?,
+        &PredefinedMenuItem::hide(handle, Some(&labels.hide))?,
+        &PredefinedMenuItem::hide_others(handle, Some(&labels.hide_others))?,
+        &PredefinedMenuItem::show_all(handle, Some(&labels.show_all))?,
         &PredefinedMenuItem::separator(handle)?,
-        &PredefinedMenuItem::quit(handle, None)?,
+        &PredefinedMenuItem::quit(handle, Some(&labels.quit))?,
     ])?;
 
     let file_menu = Submenu::with_items(handle, &labels.file, true, &[
         &MenuItem::with_id(handle, "note:create", &labels.new_note, true, Some("CmdOrCtrl+N"))?,
-        &PredefinedMenuItem::separator(handle)?,
-        &MenuItem::with_id(handle, "note:delete", &labels.move_to_trash, true, None::<&str>)?,
-        &MenuItem::with_id(handle, "app:open-trash", &labels.open_trash, true, None::<&str>)?,
+        &MenuItem::with_id(handle, "folder:create", &labels.new_folder, true, Some("CmdOrCtrl+Shift+N"))?,
     ])?;
 
     let edit_menu = Submenu::with_items(handle, &labels.edit, true, &[
-        &PredefinedMenuItem::undo(handle, None)?,
-        &PredefinedMenuItem::redo(handle, None)?,
+        &PredefinedMenuItem::undo(handle, Some(&labels.undo))?,
+        &PredefinedMenuItem::redo(handle, Some(&labels.redo))?,
         &PredefinedMenuItem::separator(handle)?,
-        &PredefinedMenuItem::cut(handle, None)?,
-        &PredefinedMenuItem::copy(handle, None)?,
-        &PredefinedMenuItem::paste(handle, None)?,
-        &PredefinedMenuItem::select_all(handle, None)?,
+        &PredefinedMenuItem::cut(handle, Some(&labels.cut))?,
+        &PredefinedMenuItem::copy(handle, Some(&labels.copy))?,
+        &PredefinedMenuItem::paste(handle, Some(&labels.paste))?,
+        &PredefinedMenuItem::select_all(handle, Some(&labels.select_all))?,
     ])?;
 
     let view_menu = Submenu::with_items(handle, &labels.view, true, &[
         &MenuItem::with_id(handle, "app:command-palette", &labels.command_palette, true, Some("CmdOrCtrl+P"))?,
         &MenuItem::with_id(handle, "app:open-search", &labels.search_notes, true, Some("CmdOrCtrl+Shift+F"))?,
+        &PredefinedMenuItem::separator(handle)?,
+        &MenuItem::with_id(handle, "app:reload", &labels.reload, true, Some("CmdOrCtrl+R"))?,
     ])?;
 
     let history_menu = Submenu::with_items(handle, &labels.history, true, &[
@@ -135,10 +163,10 @@ fn build_menu_with_labels(handle: &AppHandle, labels: &MenuLabels) -> Result<Men
     ])?;
 
     let window_menu = Submenu::with_items(handle, &labels.window, true, &[
-        &PredefinedMenuItem::minimize(handle, None)?,
-        &PredefinedMenuItem::maximize(handle, None)?,
+        &PredefinedMenuItem::minimize(handle, Some(&labels.minimize))?,
+        &PredefinedMenuItem::maximize(handle, Some(&labels.zoom))?,
         &PredefinedMenuItem::separator(handle)?,
-        &PredefinedMenuItem::close_window(handle, None)?,
+        &PredefinedMenuItem::close_window(handle, Some(&labels.close))?,
     ])?;
 
     Ok(Menu::with_items(handle, &[

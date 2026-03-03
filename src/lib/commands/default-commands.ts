@@ -13,6 +13,24 @@ export function setupDefaultCommands() {
   });
 
   commandRegistry.register({
+    id: 'folder:create',
+    name: 'commands.createFolder',
+    hotkey: 'Mod+Shift+N',
+    execute: () => {
+      const app = useAppStore.getState();
+      // Ensure sidebar is visible so FolderTree is mounted
+      if (!app.sidebarVisible) {
+        app.toggleSidebar();
+      }
+      useSidebarStore.getState().setSection('folders');
+      // Allow component to mount before dispatching
+      requestAnimationFrame(() => {
+        document.dispatchEvent(new CustomEvent('graphite:create-folder'));
+      });
+    },
+  });
+
+  commandRegistry.register({
     id: 'note:delete',
     name: 'commands.deleteCurrentNote',
     hotkey: 'Mod+Backspace',

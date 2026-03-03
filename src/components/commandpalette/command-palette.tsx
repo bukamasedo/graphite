@@ -9,10 +9,25 @@ import {
   CommandList,
   CommandShortcut,
 } from '@/components/ui/command';
+import { Shortcut } from '@/components/ui/kbd';
 import { commandRegistry } from '@/lib/commands/registry';
-import { formatHotkey } from '@/lib/platform';
 import { useAppStore } from '@/stores/app-store';
 import { useNoteStore } from '@/stores/note-store';
+
+/** cmdk に渡す検索文字列から先頭の ">" を除去する */
+function stripCommandPrefix(
+  value: string,
+  search: string,
+  keywords?: string[]
+): number {
+  if (!search) return 1;
+  const s = (
+    search.startsWith('>') ? search.slice(1).trim() : search
+  ).toLowerCase();
+  if (!s) return 1;
+  const candidates = [value, ...(keywords ?? [])];
+  return candidates.some((c) => c.toLowerCase().includes(s)) ? 1 : 0;
+}
 
 export function CommandPalette() {
   const { t } = useTranslation();
@@ -40,7 +55,6 @@ export function CommandPalette() {
   );
 
   const commands = commandRegistry.getCommands();
-  const commandSearch = isCommandMode ? query.slice(1).trim() : '';
 
   const filteredNotes = !isCommandMode ? notes.slice(0, 20) : [];
 
@@ -49,7 +63,11 @@ export function CommandPalette() {
     : commands.filter((c) => c.hotkey);
 
   return (
-    <CommandDialog open={commandPaletteOpen} onOpenChange={togglePalette}>
+    <CommandDialog
+      open={commandPaletteOpen}
+      onOpenChange={togglePalette}
+      filter={stripCommandPrefix}
+    >
       <CommandInput
         placeholder={
           isCommandMode
@@ -85,11 +103,11 @@ export function CommandPalette() {
                 key={cmd.id}
                 value={`cmd:${cmd.id}`}
                 onSelect={handleSelect}
-                keywords={[cmd.name, commandSearch]}
+                keywords={[cmd.name, t(cmd.name)]}
               >
                 <span>{t(cmd.name)}</span>
                 {cmd.hotkey && (
-                  <CommandShortcut>{formatHotkey(cmd.hotkey)}</CommandShortcut>
+                  <Shortcut keys={cmd.hotkey.split('+')} className="ml-auto" />
                 )}
               </CommandItem>
             ))}
@@ -106,9 +124,10 @@ export function CommandPalette() {
                 >
                   <span>{t(cmd.name)}</span>
                   {cmd.hotkey && (
-                    <CommandShortcut>
-                      {formatHotkey(cmd.hotkey)}
-                    </CommandShortcut>
+                    <Shortcut
+                      keys={cmd.hotkey.split('+')}
+                      className="ml-auto"
+                    />
                   )}
                 </CommandItem>
               ))}

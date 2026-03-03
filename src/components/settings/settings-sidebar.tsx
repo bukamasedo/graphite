@@ -1,11 +1,4 @@
-import {
-  ArrowLeft,
-  Info,
-  Keyboard,
-  Palette,
-  Settings2,
-  Type,
-} from 'lucide-react';
+import { ArrowLeft, Info, Keyboard, Palette, Settings2, Type } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { type SettingsSection, useAppStore } from '@/stores/app-store';
@@ -18,13 +11,9 @@ const sectionIcons: Record<SettingsSection, typeof Settings2> = {
   about: Info,
 };
 
-const sectionKeys: SettingsSection[] = [
-  'general',
-  'editor',
-  'appearance',
-  'hotkeys',
-  'about',
-];
+const sectionKeys: SettingsSection[] = ['general', 'editor', 'appearance', 'hotkeys'];
+
+const bottomSectionKeys: SettingsSection[] = ['about'];
 
 export function SettingsSidebar() {
   const { t } = useTranslation();
@@ -32,12 +21,15 @@ export function SettingsSidebar() {
   const setSettingsSection = useAppStore((s) => s.setSettingsSection);
   const exitSettings = useAppStore((s) => s.exitSettings);
 
-  const sections: { id: SettingsSection; label: string }[] = sectionKeys.map(
-    (id) => ({
-      id,
-      label: t('settings.' + id),
-    })
-  );
+  const sections = sectionKeys.map((id) => ({
+    id,
+    label: t('settings.' + id),
+  }));
+
+  const bottomSections = bottomSectionKeys.map((id) => ({
+    id,
+    label: t('settings.' + id),
+  }));
 
   return (
     <div
@@ -58,12 +50,35 @@ export function SettingsSidebar() {
           {t('common.back')}
         </Button>
       </div>
-      <div className="flex-1 px-3 py-2 overflow-y-auto">
-        <div className="text-[11px] font-medium text-text-muted/60 uppercase tracking-wider mb-1 px-2">
-          {t('settings.title')}
+      <div className="flex-1 p-2 overflow-y-auto flex flex-col">
+        <div>
+          <div className="text-[11px] font-medium text-text-muted uppercase tracking-wider mb-1 px-2">
+            {t('settings.title')}
+          </div>
+          <div className="flex flex-col gap-0.5">
+            {sections.map((s) => {
+              const Icon = sectionIcons[s.id];
+              return (
+                <Button
+                  key={s.id}
+                  variant={settingsSection === s.id ? 'secondary' : 'ghost'}
+                  size="xs"
+                  className={`justify-start text-[13px] px-2 ${
+                    settingsSection === s.id
+                      ? 'bg-bg-hover text-accent font-medium'
+                      : 'text-text-secondary'
+                  }`}
+                  onClick={() => setSettingsSection(s.id)}
+                >
+                  <Icon size={14} />
+                  {s.label}
+                </Button>
+              );
+            })}
+          </div>
         </div>
-        <div className="flex flex-col gap-0.5">
-          {sections.map((s) => {
+        <div className="mt-auto flex flex-col gap-0.5">
+          {bottomSections.map((s) => {
             const Icon = sectionIcons[s.id];
             return (
               <Button
@@ -88,4 +103,4 @@ export function SettingsSidebar() {
   );
 }
 
-export { sectionKeys };
+export { sectionKeys, bottomSectionKeys };

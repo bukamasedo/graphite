@@ -101,6 +101,7 @@ export function NoteInfoPanel() {
                     editor
                       ?.chain()
                       .setTextSelection(heading.pos + 1)
+                      .scrollIntoView()
                       .focus()
                       .run();
                   }}

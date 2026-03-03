@@ -24,9 +24,11 @@ export function SettingsContent() {
     >
       <div className="flex-1 overflow-y-auto p-8">
         <div className="max-w-2xl mx-auto">
-          <h2 className="text-base font-semibold text-text-secondary capitalize mb-6">
-            {t('settings.' + settingsSection)}
-          </h2>
+          {settingsSection !== 'about' && (
+            <h2 className="text-base font-semibold text-text-secondary capitalize mb-6">
+              {t('settings.' + settingsSection)}
+            </h2>
+          )}
           {settingsSection === 'general' && <GeneralSection />}
           {settingsSection === 'editor' && <EditorSection />}
           {settingsSection === 'appearance' && <AppearanceSection />}

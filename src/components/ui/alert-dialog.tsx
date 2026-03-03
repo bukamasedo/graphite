@@ -27,6 +27,7 @@ const AlertDialogContent = React.forwardRef<
     <AlertDialogOverlay />
     <AlertDialogPrimitive.Content
       ref={ref}
+      aria-describedby={undefined}
       className={cn(
         'fixed left-[50%] top-[50%] z-50 grid w-full max-w-[360px] translate-x-[-50%] translate-y-[-50%] gap-4 border border-border bg-popover p-6 shadow-2xl rounded-xl',
         className

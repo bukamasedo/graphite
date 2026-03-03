@@ -9,6 +9,8 @@ import { useHistoryStore } from '@/stores/history-store';
 import { useSidebarStore } from '@/stores/sidebar-store';
 import type { Folder, Note, NoteListItem } from '../types/note';
 
+export type SortKey = 'modified' | 'created' | 'title';
+
 interface NoteState {
   notes: NoteListItem[];
   activeNote: Note | null;
@@ -19,6 +21,7 @@ interface NoteState {
   flatFolderPaths: string[];
   loading: boolean;
   error: string | null;
+  sortKey: SortKey;
 
   loadNotes: (folder?: string, tag?: string) => Promise<void>;
   loadFolders: () => Promise<void>;
@@ -42,6 +45,7 @@ interface NoteState {
   deleteFolder: (path: string) => Promise<void>;
   renameFolder: (path: string, newName: string) => Promise<void>;
   moveNote: (notePath: string, targetFolder: string) => Promise<void>;
+  setSortKey: (key: SortKey) => void;
 }
 
 function flattenFolders(folders: Folder[]): string[] {
@@ -51,6 +55,22 @@ function flattenFolders(folders: Folder[]): string[] {
     result.push(...flattenFolders(f.children));
   }
   return result;
+}
+
+function sortNotes(notes: NoteListItem[], key: SortKey): NoteListItem[] {
+  return [...notes].sort((a, b) => {
+    // Pinned notes always first
+    if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
+    switch (key) {
+      case 'title':
+        return a.title.localeCompare(b.title);
+      case 'created':
+        return b.created.localeCompare(a.created);
+      case 'modified':
+      default:
+        return b.modified.localeCompare(a.modified);
+    }
+  });
 }
 
 export const useNoteStore = create<NoteState>((set, get) => ({
@@ -63,16 +83,17 @@ export const useNoteStore = create<NoteState>((set, get) => ({
   flatFolderPaths: [],
   loading: false,
   error: null,
+  sortKey: 'modified',
 
   loadNotes: async (folder?: string, tag?: string) => {
     set({ loading: true, error: null });
     try {
       const currentTag = tag ?? get().activeTag;
-      const notes = await noteApi.listNotes(
+      const raw = await noteApi.listNotes(
         currentTag ? null : (folder ?? (get().activeFolder || null)),
         currentTag ?? null
       );
-      set({ notes, loading: false });
+      set({ notes: sortNotes(raw, get().sortKey), loading: false });
     } catch (e) {
       set({ error: String(e), loading: false });
       toast.error(i18n.t('toast.loadFailed'));
@@ -314,6 +335,10 @@ export const useNoteStore = create<NoteState>((set, get) => ({
     await get().loadFolders();
     await get().loadNotes();
     toast.success(i18n.t('toast.noteMoved'));
+  },
+
+  setSortKey: (key: SortKey) => {
+    set({ sortKey: key, notes: sortNotes(get().notes, key) });
   },
 }));
 

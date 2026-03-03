@@ -62,15 +62,27 @@ export function FolderTree() {
     loadFolders().finally(() => setFoldersLoading(false));
   }, []);
 
+  useEffect(() => {
+    const handler = () => handleStartCreate();
+    document.addEventListener('graphite:create-folder', handler);
+    return () =>
+      document.removeEventListener('graphite:create-folder', handler);
+  }, []);
+
   const handleSelect = (folder: string) => {
     useSidebarStore.getState().setSection('folders');
     selectFolder(folder);
   };
 
+  useEffect(() => {
+    if (creating) {
+      inputRef.current?.focus();
+    }
+  }, [creating]);
+
   const handleStartCreate = () => {
     setCreating(true);
     setNewName('');
-    setTimeout(() => inputRef.current?.focus(), 0);
   };
 
   const handleSubmitCreate = async () => {
