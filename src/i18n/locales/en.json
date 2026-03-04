@@ -27,6 +27,9 @@
   "noteList.sortCreated": "Date created",
   "noteList.sortTitle": "Title",
 
+  "codeBlock.copy": "Copy",
+  "codeBlock.copied": "Copied!",
+
   "editor.clickToRename": "Click to rename",
   "editor.untitled": "Untitled",
   "editor.addTag": "Add tag",

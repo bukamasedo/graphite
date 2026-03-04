@@ -27,6 +27,9 @@
   "noteList.sortCreated": "作成日",
   "noteList.sortTitle": "タイトル",
 
+  "codeBlock.copy": "コピー",
+  "codeBlock.copied": "コピーしました",
+
   "editor.clickToRename": "クリックして名前を変更",
   "editor.untitled": "無題",
   "editor.addTag": "タグを追加",
