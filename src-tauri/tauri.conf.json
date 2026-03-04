@@ -39,6 +39,7 @@
     }
   },
   "bundle": {
+    "createUpdaterArtifacts": "v1Compatible",
     "active": true,
     "targets": "all",
     "icon": [
