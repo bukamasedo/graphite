@@ -1,7 +1,8 @@
 import { getVersion } from '@tauri-apps/api/app';
+import { relaunch } from '@tauri-apps/plugin-process';
 import { open } from '@tauri-apps/plugin-shell';
-import { check } from '@tauri-apps/plugin-updater';
-import { ExternalLink, Github, Loader2, Scale } from 'lucide-react';
+import { check, type Update } from '@tauri-apps/plugin-updater';
+import { Download, ExternalLink, Github, Loader2, Scale } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import appIcon from '@/assets/icon.png';
@@ -11,9 +12,16 @@ export function AboutSection() {
   const { t } = useTranslation();
   const [version, setVersion] = useState('');
   const [updateStatus, setUpdateStatus] = useState<
-    'idle' | 'checking' | 'up-to-date' | 'available' | 'failed'
+    | 'idle'
+    | 'checking'
+    | 'up-to-date'
+    | 'available'
+    | 'downloading'
+    | 'ready'
+    | 'failed'
   >('idle');
   const [updateVersion, setUpdateVersion] = useState('');
+  const [pendingUpdate, setPendingUpdate] = useState<Update | null>(null);
 
   useEffect(() => {
     getVersion()
@@ -28,11 +36,23 @@ export function AboutSection() {
       if (update) {
         setUpdateStatus('available');
         setUpdateVersion(update.version);
+        setPendingUpdate(update);
       } else {
         setUpdateStatus('up-to-date');
       }
     } catch {
-      setUpdateStatus('up-to-date');
+      setUpdateStatus('failed');
+    }
+  };
+
+  const handleDownloadAndInstall = async () => {
+    if (!pendingUpdate) return;
+    setUpdateStatus('downloading');
+    try {
+      await pendingUpdate.downloadAndInstall();
+      setUpdateStatus('ready');
+    } catch {
+      setUpdateStatus('failed');
     }
   };
 
@@ -83,9 +103,35 @@ export function AboutSection() {
           <p className="text-xs text-green-500 mt-2">{t('about.upToDate')}</p>
         )}
         {updateStatus === 'available' && (
-          <p className="text-xs text-primary mt-2">
-            {t('about.updateAvailable', { version: updateVersion })}
-          </p>
+          <div className="mt-2 flex flex-col items-center gap-2">
+            <p className="text-xs text-primary">
+              {t('about.updateDescription', { version: updateVersion })}
+            </p>
+            <Button
+              variant="default"
+              size="sm"
+              onClick={handleDownloadAndInstall}
+            >
+              <Download size={14} />
+              {t('about.update')}
+            </Button>
+          </div>
+        )}
+        {updateStatus === 'downloading' && (
+          <div className="mt-2 flex items-center gap-2 text-xs text-text-muted">
+            <Loader2 size={14} className="animate-spin" />
+            {t('about.downloading', { version: updateVersion })}
+          </div>
+        )}
+        {updateStatus === 'ready' && (
+          <div className="mt-2 flex flex-col items-center gap-2">
+            <p className="text-xs text-green-500">
+              {t('about.restartDescription', { version: updateVersion })}
+            </p>
+            <Button variant="default" size="sm" onClick={() => relaunch()}>
+              {t('about.restart')}
+            </Button>
+          </div>
         )}
         {updateStatus === 'failed' && (
           <p className="text-xs text-destructive mt-2">
