@@ -9,7 +9,7 @@ import TableHeader from '@tiptap/extension-table-header';
 import TableRow from '@tiptap/extension-table-row';
 import TaskItem from '@tiptap/extension-task-item';
 import TaskList from '@tiptap/extension-task-list';
-import { EditorContent, useEditor } from '@tiptap/react';
+import { EditorContent, ReactNodeViewRenderer, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { common, createLowlight } from 'lowlight';
 import { useEffect, useRef } from 'react';
@@ -17,6 +17,7 @@ import { Markdown } from 'tiptap-markdown';
 import { useEditorStore } from '@/stores/editor-store';
 import { extractPreview, useNoteStore } from '@/stores/note-store';
 import { useSettingsStore } from '@/stores/settings-store';
+import { CodeBlockView } from './code-block-view';
 import { LinkBubbleMenu } from './link-bubble-menu';
 
 const lowlight = createLowlight(common);
@@ -54,13 +55,16 @@ export function TiptapEditor({
               type: this.type,
               getAttributes: (match) => ({ language: match[1] }),
             }),
-            // Just ``` → immediate code block (no language)
+            // ``` + space → code block (no language)
             textblockTypeInputRule({
-              find: /^```$/,
+              find: /^```\s$/,
               type: this.type,
               getAttributes: () => ({ language: null }),
             }),
           ];
+        },
+        addNodeView() {
+          return ReactNodeViewRenderer(CodeBlockView);
         },
       }).configure({ lowlight }),
       // Remove href from rendered DOM to prevent WKWebView navigation.

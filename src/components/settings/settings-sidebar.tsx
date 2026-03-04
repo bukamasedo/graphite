@@ -1,4 +1,11 @@
-import { ArrowLeft, Info, Keyboard, Palette, Settings2, Type } from 'lucide-react';
+import {
+  ArrowLeft,
+  Info,
+  Keyboard,
+  Palette,
+  Settings2,
+  Type,
+} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { type SettingsSection, useAppStore } from '@/stores/app-store';
@@ -11,7 +18,12 @@ const sectionIcons: Record<SettingsSection, typeof Settings2> = {
   about: Info,
 };
 
-const sectionKeys: SettingsSection[] = ['general', 'editor', 'appearance', 'hotkeys'];
+const sectionKeys: SettingsSection[] = [
+  'general',
+  'editor',
+  'appearance',
+  'hotkeys',
+];
 
 const bottomSectionKeys: SettingsSection[] = ['about'];
 
