@@ -7,6 +7,7 @@
     "shell:allow-open",
     "core:menu:default",
     "updater:default",
-    "dialog:default"
+    "dialog:default",
+    "process:allow-restart"
   ]
 }

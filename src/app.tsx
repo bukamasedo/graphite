@@ -1,4 +1,5 @@
 import { listen } from '@tauri-apps/api/event';
+import { check } from '@tauri-apps/plugin-updater';
 import { Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -8,6 +9,7 @@ import { trashApi } from '@/lib/api/trash-api';
 import { CheatSheetModal } from './components/cheat-sheet/cheat-sheet-modal';
 import { AppLayout } from './components/layout/app-layout';
 import { OnboardingModal } from './components/onboarding/onboarding-modal';
+import { UpdateToast } from './components/update-toast';
 import { TrashModal } from './components/trash/trash-modal';
 import {
   AlertDialog,
@@ -81,6 +83,20 @@ export function App() {
     }
   }, [settingsLoaded]);
 
+  // Check for updates after app is fully initialized
+  const [pendingUpdate, setPendingUpdate] = useState<Awaited<
+    ReturnType<typeof check>
+  > | null>(null);
+
+  useEffect(() => {
+    if (!initialized || !settingsLoaded) return;
+    check()
+      .then((update) => {
+        if (update) setPendingUpdate(update);
+      })
+      .catch(() => {});
+  }, [initialized, settingsLoaded]);
+
   const handleOnboardingComplete = () => {
     setShowOnboarding(false);
     updateSetting('hasSeenOnboarding', true);
@@ -121,6 +137,12 @@ export function App() {
     <TooltipProvider delayDuration={300} skipDelayDuration={100}>
       <AppLayout />
       <Toaster />
+      {pendingUpdate && (
+        <UpdateToast
+          update={pendingUpdate}
+          onDismiss={() => setPendingUpdate(null)}
+        />
+      )}
       <TrashModal />
       <CheatSheetModal />
       <OnboardingModal
