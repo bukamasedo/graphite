@@ -35,7 +35,7 @@
       "endpoints": [
         "https://github.com/bukamasedo/graphite/releases/latest/download/latest.json"
       ],
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEQ4NUM4QjdDMEZBMEQ2NjcKUldSbjFxQVBmSXRjMkRkT2pEUkJBdEI1YWJwYm85QjQrODd0WTlmSjhJYWtUQi91WDNJQmpxVEsK"
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDc1OTQwRDI0MTc5MTdBQUEKUldTcWVwRVhKQTJVZFNLVkM0a2tZZXhEWktmWjFRQXBZSEs5cVhNOFZwM0FNVVNrNmNIclYyalkK"
     }
   },
   "bundle": {
