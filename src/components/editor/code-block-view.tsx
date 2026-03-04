@@ -2,10 +2,7 @@ import type { NodeViewProps } from '@tiptap/react';
 import { NodeViewContent, NodeViewWrapper } from '@tiptap/react';
 import { Check, Copy } from 'lucide-react';
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 export function CodeBlockView({ node }: NodeViewProps) {
-  const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
   const language = node.attrs.language as string | null;
 
@@ -23,7 +20,7 @@ export function CodeBlockView({ node }: NodeViewProps) {
           type="button"
           className="code-block-copy"
           onClick={handleCopy}
-          title={t('codeBlock.copy')}
+          title="Copy"
         >
           {copied ? <Check size={14} /> : <Copy size={14} />}
         </button>
