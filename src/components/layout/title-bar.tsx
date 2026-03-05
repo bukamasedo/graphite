@@ -1,3 +1,4 @@
+import { getCurrentWindow } from '@tauri-apps/api/window';
 import {
   ChevronLeft,
   ChevronRight,
@@ -6,6 +7,7 @@ import {
   PanelLeft,
   PanelRight,
 } from 'lucide-react';
+import type { MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { HistoryPopover } from '@/components/editor/history-popover';
 import { Button } from '@/components/ui/button';
@@ -31,17 +33,26 @@ export function TitleBar() {
   const handleBack = () => commandRegistry.execute('history:back');
   const handleForward = () => commandRegistry.execute('history:forward');
 
+  const handleMouseDown = (e: MouseEvent) => {
+    // Only drag on left-click directly on the titlebar (not on buttons)
+    if (e.button !== 0) return;
+    if ((e.target as HTMLElement).closest('button')) return;
+    e.preventDefault();
+    getCurrentWindow().startDragging();
+  };
+
   return (
     <div
       data-tauri-drag-region
       className="fixed top-0 left-0 right-0 flex items-center select-none"
       style={{
         height: 'var(--titlebar-height)',
-        background: 'transparent',
+        background: 'var(--bg-primary)',
         zIndex: 50,
         paddingLeft: 74,
         paddingRight: 12,
       }}
+      onMouseDown={handleMouseDown}
     >
       {/* Navigation (left) — hidden in settings mode */}
       {viewMode !== 'settings' && (
