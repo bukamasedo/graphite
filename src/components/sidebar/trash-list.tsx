@@ -111,17 +111,34 @@ export function TrashList() {
     await loadFolders();
   };
 
+  const navigateToAllNotes = () => {
+    setSection('folders');
+    useNoteStore.getState().selectFolder('');
+  };
+
   const handleDeleteGroup = async (groupFolder: string) => {
     const group = groups.find((g) => g.folder === groupFolder);
     if (!group) return;
     for (const item of group.items) {
       await permanentlyDeleteTrash(item.id);
     }
+    // グループ削除後、ゴミ箱が空ならフォルダビューへ遷移
+    const { trashItems } = useSidebarStore.getState();
+    if (trashItems.length === 0) {
+      navigateToAllNotes();
+    } else if (useNoteStore.getState().activeTrashGroup === groupFolder) {
+      useNoteStore.setState({
+        activeTrashGroup: null,
+        notes: [],
+        activeNote: null,
+      });
+    }
     setConfirmDeleteGroup(null);
   };
 
   const handleEmptyTrash = async () => {
     await emptyTrash();
+    navigateToAllNotes();
     setConfirmEmpty(false);
   };
 

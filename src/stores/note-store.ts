@@ -133,6 +133,7 @@ export const useNoteStore = create<NoteState>((set, get) => ({
     );
     set({ activeNote: note });
     await get().loadNotes();
+    await get().loadFolders();
     toast.success(i18n.t('toast.noteCreated'));
     return note;
   },
@@ -158,6 +159,10 @@ export const useNoteStore = create<NoteState>((set, get) => ({
       set({ activeNote: null });
     }
     await get().loadNotes();
+    await get().loadFolders();
+    const sidebar = useSidebarStore.getState();
+    sidebar.loadTrash();
+    sidebar.loadTags();
     toast.success(i18n.t('toast.noteMovedToTrash'));
   },
 
@@ -203,6 +208,7 @@ export const useNoteStore = create<NoteState>((set, get) => ({
       activeNote: { ...activeNote, tags },
       notes: get().notes.map((n) => (n.path === path ? { ...n, tags } : n)),
     });
+    useSidebarStore.getState().loadTags();
   },
 
   updateActiveContent: (content: string) => {
