@@ -22,7 +22,7 @@ AlertDialogOverlay.displayName = AlertDialogPrimitive.Overlay.displayName;
 const AlertDialogContent = React.forwardRef<
   React.ComponentRef<typeof AlertDialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Content>
->(({ className, ...props }, ref) => (
+>(({ className, onKeyDown, ...props }, ref) => (
   <AlertDialogPortal>
     <AlertDialogOverlay />
     <AlertDialogPrimitive.Content
@@ -32,6 +32,16 @@ const AlertDialogContent = React.forwardRef<
         'fixed left-[50%] top-[50%] z-50 grid w-full max-w-[360px] translate-x-[-50%] translate-y-[-50%] gap-4 border border-border bg-popover p-6 shadow-2xl rounded-xl',
         className
       )}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          const action = e.currentTarget.querySelector<HTMLButtonElement>(
+            '[data-alert-dialog-action]'
+          );
+          action?.click();
+        }
+        onKeyDown?.(e);
+      }}
       {...props}
     />
   </AlertDialogPortal>
@@ -85,6 +95,7 @@ const AlertDialogAction = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <AlertDialogPrimitive.Action
     ref={ref}
+    data-alert-dialog-action=""
     className={cn(
       buttonVariants({ variant: 'destructive', size: 'sm' }),
       className

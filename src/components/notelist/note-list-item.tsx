@@ -153,12 +153,14 @@ export function NoteListItem({ note }: Props) {
         {
           id: 'restore',
           text: t('common.restore'),
+          accelerator: 'Return',
           action: handleTrashRestore,
         },
         { separator: true },
         {
           id: 'delete',
           text: t('trash.deletePermanently'),
+          accelerator: 'CmdOrCtrl+Backspace',
           action: () => setConfirmingDelete(true),
         },
       ]);
