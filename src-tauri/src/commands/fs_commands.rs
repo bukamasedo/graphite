@@ -1,6 +1,6 @@
-use crate::commands::trash_commands::{TrashEntry, add_to_manifest};
-use crate::models::note::{Note, NoteListItem, NoteFrontmatter};
-use crate::utils::frontmatter::{parse_frontmatter, serialize_frontmatter, extract_preview};
+use crate::commands::trash_commands::{add_to_manifest, TrashEntry};
+use crate::models::note::{Note, NoteFrontmatter, NoteListItem};
+use crate::utils::frontmatter::{extract_preview, parse_frontmatter, serialize_frontmatter};
 use crate::utils::paths;
 use chrono::Utc;
 use std::fs;
@@ -8,7 +8,10 @@ use uuid::Uuid;
 use walkdir::WalkDir;
 
 #[tauri::command]
-pub fn list_notes(folder: Option<String>, tag: Option<String>) -> Result<Vec<NoteListItem>, String> {
+pub fn list_notes(
+    folder: Option<String>,
+    tag: Option<String>,
+) -> Result<Vec<NoteListItem>, String> {
     let vault_path = paths::graphite_dir()?;
 
     // When filtering by tag, always search entire vault
@@ -18,8 +21,12 @@ pub fn list_notes(folder: Option<String>, tag: Option<String>) -> Result<Vec<Not
         match &folder {
             Some(f) if !f.is_empty() => {
                 let p = std::path::PathBuf::from(f);
-                if p.is_absolute() { p } else { vault_path.join(f) }
-            },
+                if p.is_absolute() {
+                    p
+                } else {
+                    vault_path.join(f)
+                }
+            }
             _ => vault_path.clone(),
         }
     };
@@ -32,10 +39,7 @@ pub fn list_notes(folder: Option<String>, tag: Option<String>) -> Result<Vec<Not
 
     let mut notes: Vec<NoteListItem> = Vec::new();
 
-    for entry in WalkDir::new(&search_dir)
-        .into_iter()
-        .filter_map(|e| e.ok())
-    {
+    for entry in WalkDir::new(&search_dir).into_iter().filter_map(|e| e.ok()) {
         let path = entry.path();
         if path.extension().is_none_or(|ext| ext != "md") {
             continue;
@@ -93,8 +97,7 @@ pub fn list_notes(folder: Option<String>, tag: Option<String>) -> Result<Vec<Not
 
 #[tauri::command]
 pub fn read_note(path: String) -> Result<Note, String> {
-    let content = fs::read_to_string(&path)
-        .map_err(|e| format!("Failed to read note: {}", e))?;
+    let content = fs::read_to_string(&path).map_err(|e| format!("Failed to read note: {}", e))?;
 
     let (fm, body) = parse_frontmatter(&content);
     let vault_path = paths::graphite_dir()?.to_string_lossy().to_string();
@@ -118,12 +121,18 @@ pub fn read_note(path: String) -> Result<Note, String> {
 }
 
 #[tauri::command]
-pub fn write_note(path: String, content: String, title: Option<String>, tags: Option<Vec<String>>, pinned: Option<bool>) -> Result<(), String> {
+pub fn write_note(
+    path: String,
+    content: String,
+    title: Option<String>,
+    tags: Option<Vec<String>>,
+    pinned: Option<bool>,
+) -> Result<(), String> {
     if !std::path::Path::new(&path).exists() {
         return Err("Note file not found (may have been renamed)".to_string());
     }
-    let existing = fs::read_to_string(&path)
-        .map_err(|e| format!("Failed to read existing note: {}", e))?;
+    let existing =
+        fs::read_to_string(&path).map_err(|e| format!("Failed to read existing note: {}", e))?;
     let (existing_fm, _) = parse_frontmatter(&existing);
 
     let mut fm = existing_fm.unwrap_or_else(|| {
@@ -142,8 +151,7 @@ pub fn write_note(path: String, content: String, title: Option<String>, tags: Op
     fm.modified = Utc::now().to_rfc3339();
 
     let full_content = serialize_frontmatter(&fm, &content);
-    fs::write(&path, full_content)
-        .map_err(|e| format!("Failed to write note: {}", e))?;
+    fs::write(&path, full_content).map_err(|e| format!("Failed to write note: {}", e))?;
 
     Ok(())
 }
@@ -157,8 +165,12 @@ pub fn create_note(folder: Option<String>, title: Option<String>) -> Result<Note
     let dir = match &folder {
         Some(f) if !f.is_empty() => {
             let p = std::path::PathBuf::from(f);
-            if p.is_absolute() { p } else { vault_path.join(f) }
-        },
+            if p.is_absolute() {
+                p
+            } else {
+                vault_path.join(f)
+            }
+        }
         _ => vault_path.clone(),
     };
 
@@ -185,8 +197,7 @@ pub fn create_note(folder: Option<String>, title: Option<String>) -> Result<Note
     };
 
     let content = serialize_frontmatter(&fm, "\n");
-    fs::write(&path, &content)
-        .map_err(|e| format!("Failed to create note: {}", e))?;
+    fs::write(&path, &content).map_err(|e| format!("Failed to create note: {}", e))?;
 
     let path_str = path.to_string_lossy().to_string();
     let folder_name = folder.unwrap_or_default();
@@ -207,8 +218,7 @@ pub fn create_note(folder: Option<String>, title: Option<String>) -> Result<Note
 #[tauri::command]
 pub fn delete_note(path: String) -> Result<(), String> {
     let trash_dir = paths::trash_dir()?;
-    fs::create_dir_all(&trash_dir)
-        .map_err(|e| format!("Failed to create trash dir: {}", e))?;
+    fs::create_dir_all(&trash_dir).map_err(|e| format!("Failed to create trash dir: {}", e))?;
 
     let source = std::path::Path::new(&path);
     let filename = source
@@ -229,8 +239,7 @@ pub fn delete_note(path: String) -> Result<(), String> {
     let id = Uuid::new_v4().to_string()[..8].to_string();
     let trash_path = trash_dir.join(format!("{}_{}", id, filename));
 
-    fs::rename(&path, &trash_path)
-        .map_err(|e| format!("Failed to move note to trash: {}", e))?;
+    fs::rename(&path, &trash_path).map_err(|e| format!("Failed to move note to trash: {}", e))?;
 
     add_to_manifest(TrashEntry {
         id,
@@ -254,19 +263,16 @@ pub fn rename_note(path: String, new_title: String) -> Result<String, String> {
     }
 
     // Update frontmatter title
-    let content = fs::read_to_string(&path)
-        .map_err(|e| format!("Failed to read note: {}", e))?;
+    let content = fs::read_to_string(&path).map_err(|e| format!("Failed to read note: {}", e))?;
     let (fm, body) = parse_frontmatter(&content);
     let mut fm = fm.unwrap_or_else(|| NoteFrontmatter::with_title(new_title.clone()));
     fm.title = new_title;
     fm.modified = Utc::now().to_rfc3339();
 
     let full_content = serialize_frontmatter(&fm, &body);
-    fs::write(&path, &full_content)
-        .map_err(|e| format!("Failed to update note: {}", e))?;
+    fs::write(&path, &full_content).map_err(|e| format!("Failed to update note: {}", e))?;
 
-    fs::rename(&path, &new_path)
-        .map_err(|e| format!("Failed to rename note: {}", e))?;
+    fs::rename(&path, &new_path).map_err(|e| format!("Failed to rename note: {}", e))?;
 
     Ok(new_path.to_string_lossy().to_string())
 }

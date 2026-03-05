@@ -19,6 +19,5 @@ pub fn write_export_file(path: String, content: String) -> Result<(), String> {
         }
     }
 
-    fs::write(&dest, content.as_bytes())
-        .map_err(|e| format!("Failed to write export file: {}", e))
+    fs::write(&dest, content.as_bytes()).map_err(|e| format!("Failed to write export file: {}", e))
 }

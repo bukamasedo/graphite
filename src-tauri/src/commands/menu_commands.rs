@@ -139,11 +139,7 @@ mod macos_impl {
 
             let mouse_loc = NSEvent::mouseLocation();
 
-            let selected = menu.popUpMenuPositioningItem_atLocation_inView(
-                None,
-                mouse_loc,
-                None,
-            );
+            let selected = menu.popUpMenuPositioningItem_atLocation_inView(None, mouse_loc, None);
 
             if selected {
                 let tag = target.selected_tag();

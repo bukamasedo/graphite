@@ -1,3 +1,3 @@
-pub mod note;
-pub mod folder;
 pub mod config;
+pub mod folder;
+pub mod note;

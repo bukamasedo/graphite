@@ -24,7 +24,11 @@ pub fn move_note(note_path: String, target_folder: String) -> Result<String, Str
         vault.clone()
     } else {
         let t = PathBuf::from(&target_folder);
-        if t.is_absolute() { t } else { vault.join(&target_folder) }
+        if t.is_absolute() {
+            t
+        } else {
+            vault.join(&target_folder)
+        }
     };
     let target_dir = paths::ensure_within_vault(&target_dir)?;
 
@@ -44,8 +48,7 @@ pub fn move_note(note_path: String, target_folder: String) -> Result<String, Str
         return Err("A note with this name already exists in the target folder".to_string());
     }
 
-    fs::rename(&source, &dest)
-        .map_err(|e| format!("Failed to move note: {}", e))?;
+    fs::rename(&source, &dest).map_err(|e| format!("Failed to move note: {}", e))?;
 
     Ok(dest.to_string_lossy().to_string())
 }

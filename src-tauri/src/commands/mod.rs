@@ -1,10 +1,10 @@
-pub mod init_commands;
-pub mod fs_commands;
-pub mod folder_commands;
 pub mod config_commands;
+pub mod export_commands;
+pub mod folder_commands;
+pub mod fs_commands;
+pub mod init_commands;
+pub mod menu_commands;
+pub mod move_commands;
 pub mod search_commands;
 pub mod tag_commands;
 pub mod trash_commands;
-pub mod export_commands;
-pub mod move_commands;
-pub mod menu_commands;

@@ -1,4 +1,4 @@
-use crate::models::note::{SearchResult, SearchMatch};
+use crate::models::note::{SearchMatch, SearchResult};
 use crate::utils::frontmatter::parse_frontmatter;
 use crate::utils::paths;
 use rayon::prelude::*;
