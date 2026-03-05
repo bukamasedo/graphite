@@ -1,4 +1,4 @@
-use crate::commands::trash_commands::{TrashEntry, MANIFEST_LOCK, read_manifest, write_manifest};
+use crate::commands::trash_commands::{read_manifest, write_manifest, TrashEntry, MANIFEST_LOCK};
 use crate::models::folder::Folder;
 use crate::utils::frontmatter::parse_frontmatter;
 use crate::utils::paths;
@@ -14,16 +14,26 @@ pub fn list_folders() -> Result<Vec<Folder>, String> {
     }
 
     fn count_md_files(path: &std::path::Path) -> usize {
-        match fs::read_dir(path) {
-            Ok(entries) => entries
-                .filter_map(|e| e.ok())
-                .filter(|e| {
-                    e.path().is_file()
-                        && e.path().extension().is_some_and(|ext| ext == "md")
-                })
-                .count(),
-            Err(_) => 0,
+        let entries = match fs::read_dir(path) {
+            Ok(e) => e,
+            Err(_) => return 0,
+        };
+        let mut count = 0;
+        for entry in entries.filter_map(|e| e.ok()) {
+            let p = entry.path();
+            if p.is_file() && p.extension().is_some_and(|ext| ext == "md") {
+                count += 1;
+            } else if p.is_dir()
+                && !p
+                    .file_name()
+                    .unwrap_or_default()
+                    .to_string_lossy()
+                    .starts_with('.')
+            {
+                count += count_md_files(&p);
+            }
         }
+        count
     }
 
     fn scan_folder(path: &std::path::Path) -> Vec<Folder> {
@@ -62,6 +72,27 @@ pub fn list_folders() -> Result<Vec<Folder>, String> {
 }
 
 #[tauri::command]
+pub fn count_all_notes() -> Result<usize, String> {
+    let vault_path = paths::graphite_dir()?;
+    if !vault_path.exists() {
+        return Ok(0);
+    }
+    let count = WalkDir::new(&vault_path)
+        .into_iter()
+        .filter_map(|e| e.ok())
+        .filter(|e| {
+            e.path().is_file()
+                && e.path().extension().is_some_and(|ext| ext == "md")
+                && !e
+                    .path()
+                    .components()
+                    .any(|c| c.as_os_str().to_string_lossy().starts_with('.'))
+        })
+        .count();
+    Ok(count)
+}
+
+#[tauri::command]
 pub fn create_folder(name: String, parent: Option<String>) -> Result<Folder, String> {
     let vault_path = paths::graphite_dir()?;
     let base = match &parent {
@@ -76,8 +107,7 @@ pub fn create_folder(name: String, parent: Option<String>) -> Result<Folder, Str
         return Err("Folder already exists".to_string());
     }
 
-    fs::create_dir_all(&folder_path)
-        .map_err(|e| format!("Failed to create folder: {}", e))?;
+    fs::create_dir_all(&folder_path).map_err(|e| format!("Failed to create folder: {}", e))?;
 
     Ok(Folder {
         name,
@@ -95,11 +125,12 @@ pub fn delete_folder(path: String) -> Result<(), String> {
     }
 
     let trash_dir = paths::trash_dir()?;
-    fs::create_dir_all(&trash_dir)
-        .map_err(|e| format!("Failed to create trash dir: {}", e))?;
+    fs::create_dir_all(&trash_dir).map_err(|e| format!("Failed to create trash dir: {}", e))?;
 
     let now = Utc::now().to_rfc3339();
-    let _lock = MANIFEST_LOCK.lock().map_err(|e| format!("Manifest lock error: {}", e))?;
+    let _lock = MANIFEST_LOCK
+        .lock()
+        .map_err(|e| format!("Manifest lock error: {}", e))?;
     let mut entries = read_manifest()?;
 
     // Phase 1: Prepare all entries and move files.
@@ -182,8 +213,7 @@ pub fn rename_folder(path: String, new_name: String) -> Result<String, String> {
         return Err("A folder with this name already exists".to_string());
     }
 
-    fs::rename(&path, &new_path)
-        .map_err(|e| format!("Failed to rename folder: {}", e))?;
+    fs::rename(&path, &new_path).map_err(|e| format!("Failed to rename folder: {}", e))?;
 
     Ok(new_path.to_string_lossy().to_string())
 }

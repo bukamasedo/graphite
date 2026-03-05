@@ -1,5 +1,5 @@
 {
-  "name": "@graphite/desktop",
+  "name": "@graphite",
   "private": true,
   "version": "0.1.1",
   "type": "module",
@@ -10,7 +10,8 @@
     "tauri": "tauri",
     "format": "biome format --write .",
     "lint": "biome lint .",
-    "check": "biome check --write ."
+    "check": "biome check --write .",
+    "prepare": "husky"
   },
   "dependencies": {
     "@radix-ui/react-alert-dialog": "^1.1.15",
@@ -73,6 +74,14 @@
     "unist-util-visit": "^5.1.0",
     "zustand": "^5.0.3"
   },
+  "lint-staged": {
+    "*.{js,ts,tsx,jsx,json,css}": [
+      "biome check --write --no-errors-on-unmatched"
+    ],
+    "src-tauri/**/*.rs": [
+      "cargo fmt --manifest-path src-tauri/Cargo.toml --"
+    ]
+  },
   "devDependencies": {
     "@biomejs/biome": "^2.4.5",
     "@tauri-apps/cli": "^2.2.0",
@@ -80,6 +89,8 @@
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.20",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.3.2",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.17",
     "tailwindcss-animate": "^1.0.7",

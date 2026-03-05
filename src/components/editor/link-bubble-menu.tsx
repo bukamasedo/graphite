@@ -113,7 +113,15 @@ export function LinkBubbleMenu({ editor }: Props) {
 
   const sep = <div className="w-px h-4 bg-white/10 mx-0.5 flex-shrink-0" />;
 
-  const formatButtons = [
+  const formatButtons: (
+    | {
+        icon: typeof Bold;
+        title: string;
+        action: () => boolean;
+        active: boolean;
+      }
+    | { separator: string }
+  )[] = [
     {
       icon: Bold,
       title: 'ボールド',
@@ -138,7 +146,7 @@ export function LinkBubbleMenu({ editor }: Props) {
       action: () => editor.chain().focus().toggleCode().run(),
       active: editor.isActive('code'),
     },
-    null, // separator
+    { separator: 'sep-1' },
     {
       icon: Heading1,
       title: '見出し1',
@@ -157,7 +165,7 @@ export function LinkBubbleMenu({ editor }: Props) {
       action: () => editor.chain().focus().toggleHeading({ level: 3 }).run(),
       active: editor.isActive('heading', { level: 3 }),
     },
-    null, // separator
+    { separator: 'sep-2' },
     {
       icon: List,
       title: '箇条書き',
@@ -204,10 +212,16 @@ export function LinkBubbleMenu({ editor }: Props) {
               className="bg-transparent outline-none text-text-primary placeholder:text-text-muted w-52"
             />
             {sep}
-            <button onClick={applyLink} className={iconBtnClass} title="適用">
+            <button
+              type="button"
+              onClick={applyLink}
+              className={iconBtnClass}
+              title="適用"
+            >
               <Check size={12} />
             </button>
             <button
+              type="button"
               onClick={cancelEdit}
               className={iconBtnClass}
               title="キャンセル"
@@ -223,10 +237,16 @@ export function LinkBubbleMenu({ editor }: Props) {
               {currentUrl}
             </span>
             {sep}
-            <button onClick={startEdit} className={iconBtnClass} title="編集">
+            <button
+              type="button"
+              onClick={startEdit}
+              className={iconBtnClass}
+              title="編集"
+            >
               <Pencil size={12} />
             </button>
             <button
+              type="button"
               onClick={openLink}
               className={iconBtnClass}
               title="ブラウザで開く"
@@ -234,6 +254,7 @@ export function LinkBubbleMenu({ editor }: Props) {
               <ExternalLink size={12} />
             </button>
             <button
+              type="button"
               onClick={removeLink}
               className={`${iconBtnClass} hover:text-red-400`}
               title="リンクを削除"
@@ -244,14 +265,15 @@ export function LinkBubbleMenu({ editor }: Props) {
         ) : (
           /* View 1: フォーマット */
           <>
-            {formatButtons.map((btn, i) =>
-              btn === null ? (
+            {formatButtons.map((btn) =>
+              'separator' in btn ? (
                 <div
-                  key={i}
+                  key={btn.separator}
                   className="w-px h-4 bg-white/10 mx-0.5 flex-shrink-0"
                 />
               ) : (
                 <button
+                  type="button"
                   key={btn.title}
                   onClick={btn.action}
                   className={btnClass(btn.active)}
@@ -263,6 +285,7 @@ export function LinkBubbleMenu({ editor }: Props) {
             )}
             {sep}
             <button
+              type="button"
               onClick={startEdit}
               className={btnClass(editor.isActive('link'))}
               title="リンクを追加"

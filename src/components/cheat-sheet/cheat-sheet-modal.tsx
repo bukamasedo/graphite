@@ -46,8 +46,10 @@ export function CheatSheetModal() {
 
   return (
     <>
-      <div
-        className="fixed inset-0 z-[60] transition-opacity duration-200"
+      <button
+        type="button"
+        tabIndex={-1}
+        className="fixed inset-0 z-[60] transition-opacity duration-200 cursor-default"
         style={{
           backgroundColor: visible ? 'rgba(0,0,0,0.4)' : 'rgba(0,0,0,0)',
         }}
@@ -70,6 +72,7 @@ export function CheatSheetModal() {
               {t('cheatSheet.title')}
             </span>
             <button
+              type="button"
               className="text-text-muted hover:text-text-secondary transition-colors"
               onClick={toggle}
             >
@@ -93,7 +96,9 @@ export function CheatSheetModal() {
                       <span className="text-[13px] text-text-muted">
                         {t(cmd.name)}
                       </span>
-                      <Shortcut keys={hotkeyToKeys(cmd.hotkey!)} />
+                      {cmd.hotkey && (
+                        <Shortcut keys={hotkeyToKeys(cmd.hotkey)} />
+                      )}
                     </div>
                   ))}
                 </div>

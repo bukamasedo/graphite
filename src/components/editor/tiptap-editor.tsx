@@ -158,7 +158,7 @@ export function TiptapEditor({
       }
       setEditor(null);
     };
-  }, [editor, setEditor, setWordCount]);
+  }, [editor, setEditor, setWordCount, setDirty]);
 
   // Update editable state when readOnly changes
   useEffect(() => {

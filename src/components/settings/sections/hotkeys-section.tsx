@@ -145,13 +145,13 @@ function HotkeyRow({
     <div className="flex items-center justify-between py-2.5 px-3 rounded-md hover:bg-bg-hover/50 transition-colors">
       <span className="text-sm text-text-secondary">{t(cmd.name)}</span>
       <div className="flex items-center gap-2">
-        <button onClick={onToggleRecord}>
+        <button type="button" onClick={onToggleRecord}>
           {isRecording ? (
             <Kbd className="border-primary/50 bg-primary/10 text-primary animate-pulse">
               {t('settings.recording')}
             </Kbd>
           ) : (
-            <Shortcut keys={cmd.hotkey!.split('+')} />
+            <Shortcut keys={cmd.hotkey?.split('+')} />
           )}
         </button>
         {isOverridden && (

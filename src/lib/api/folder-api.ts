@@ -3,6 +3,7 @@ import type { Folder } from '@/types/note';
 
 export const folderApi = {
   listFolders: () => invoke<Folder[]>('list_folders'),
+  countAllNotes: () => invoke<number>('count_all_notes'),
 
   createFolder: (name: string, parent: string | null) =>
     invoke<void>('create_folder', { name, parent }),

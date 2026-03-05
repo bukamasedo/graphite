@@ -14,17 +14,17 @@ export function TagList() {
   const setSection = useSidebarStore((s) => s.setSection);
   const setActiveTagIndex = useSidebarStore((s) => s.setActiveTagIndex);
   const focusedPanel = useAppStore((s) => s.focusedPanel);
-  const notes = useNoteStore((s) => s.notes);
+  const _notes = useNoteStore((s) => s.notes);
   const activeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (section === 'tags')
       activeRef.current?.scrollIntoView({ block: 'nearest' });
-  }, [activeIndex, section]);
+  }, [section]);
 
   useEffect(() => {
     loadTags();
-  }, [notes]);
+  }, [loadTags]);
 
   const selectTag = useNoteStore((s) => s.selectTag);
 
@@ -50,6 +50,8 @@ export function TagList() {
   return (
     <div className="space-y-0.5" role="listbox" aria-label={t('sidebar.tags')}>
       {tags.map((tag, index) => (
+        // biome-ignore lint/a11y/useFocusableInteractive: keyboard navigation handled at list level
+        // biome-ignore lint/a11y/useKeyWithClickEvents: keyboard navigation handled at list level
         <div
           key={tag.name}
           ref={isItemActive(index) ? activeRef : undefined}

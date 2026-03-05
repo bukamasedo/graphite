@@ -59,9 +59,9 @@ export function Shortcut({ keys, className }: ShortcutProps) {
 
   return (
     <span className={cn('inline-flex items-center gap-1', className)}>
-      {resolved.map((key, i) => (
+      {resolved.map((key) => (
         <kbd
-          key={i}
+          key={key}
           className="inline-flex items-center justify-center min-w-[20px] h-[20px] px-1.5 rounded border border-white/[0.08] bg-white/[0.04] text-[11px] text-text-muted font-sans"
         >
           {key}

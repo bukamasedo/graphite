@@ -12,11 +12,17 @@ interface HtmlNode {
   value: string;
 }
 
-interface Parent {
-  children: (TextNode | HtmlNode | any)[];
+interface RemarkNode {
+  type: string;
+  value?: string;
+  children?: RemarkNode[];
 }
 
-function visitText(tree: any): void {
+interface Parent {
+  children: (TextNode | HtmlNode | RemarkNode)[];
+}
+
+function visitText(tree: RemarkNode): void {
   if (!tree || !tree.children) return;
 
   for (let i = 0; i < tree.children.length; i++) {
@@ -33,7 +39,7 @@ function visitText(tree: any): void {
       for (const match of matches) {
         const fullMatch = match[0];
         const inner = match[1];
-        const start = match.index!;
+        const start = match.index ?? 0;
 
         if (start > lastIndex) {
           children.push({ type: 'text', value: value.slice(lastIndex, start) });
@@ -69,7 +75,7 @@ function visitText(tree: any): void {
 }
 
 export default function remarkWikiLinks() {
-  return (tree: any) => {
+  return (tree: RemarkNode) => {
     visitText(tree);
   };
 }

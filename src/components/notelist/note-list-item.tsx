@@ -35,7 +35,7 @@ export function NoteListItem({ note }: Props) {
   const renameNote = useNoteStore((s) => s.renameNote);
   const activeTrashGroup = useNoteStore((s) => s.activeTrashGroup);
   const selectTrashNote = useNoteStore((s) => s.selectTrashNote);
-  const loadTrash = useSidebarStore((s) => s.loadTrash);
+  const _loadTrash = useSidebarStore((s) => s.loadTrash);
   const loadNotes = useNoteStore((s) => s.loadNotes);
   const loadFolders = useNoteStore((s) => s.loadFolders);
   const restoreNote = useSidebarStore((s) => s.restoreNote);
@@ -153,12 +153,14 @@ export function NoteListItem({ note }: Props) {
         {
           id: 'restore',
           text: t('common.restore'),
+          accelerator: 'Return',
           action: handleTrashRestore,
         },
         { separator: true },
         {
           id: 'delete',
           text: t('trash.deletePermanently'),
+          accelerator: 'CmdOrCtrl+Backspace',
           action: () => setConfirmingDelete(true),
         },
       ]);
@@ -214,6 +216,8 @@ export function NoteListItem({ note }: Props) {
 
   return (
     <>
+      {/* biome-ignore lint/a11y/useFocusableInteractive: keyboard navigation handled at list level */}
+      {/* biome-ignore lint/a11y/useKeyWithClickEvents: keyboard navigation handled at list level */}
       <div
         ref={itemRef}
         role="option"

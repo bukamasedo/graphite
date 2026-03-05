@@ -19,6 +19,7 @@ interface NoteState {
   activeTrashGroup: string | null;
   folders: Folder[];
   flatFolderPaths: string[];
+  totalNoteCount: number;
   loading: boolean;
   error: string | null;
   sortKey: SortKey;
@@ -66,7 +67,6 @@ function sortNotes(notes: NoteListItem[], key: SortKey): NoteListItem[] {
         return a.title.localeCompare(b.title);
       case 'created':
         return b.created.localeCompare(a.created);
-      case 'modified':
       default:
         return b.modified.localeCompare(a.modified);
     }
@@ -81,6 +81,7 @@ export const useNoteStore = create<NoteState>((set, get) => ({
   activeTrashGroup: null,
   folders: [],
   flatFolderPaths: [],
+  totalNoteCount: 0,
   loading: false,
   error: null,
   sortKey: 'modified',
@@ -102,8 +103,15 @@ export const useNoteStore = create<NoteState>((set, get) => ({
 
   loadFolders: async () => {
     try {
-      const folders = await folderApi.listFolders();
-      set({ folders, flatFolderPaths: flattenFolders(folders) });
+      const [folders, totalNoteCount] = await Promise.all([
+        folderApi.listFolders(),
+        folderApi.countAllNotes(),
+      ]);
+      set({
+        folders,
+        flatFolderPaths: flattenFolders(folders),
+        totalNoteCount,
+      });
     } catch (e) {
       console.error('Failed to load folders:', e);
     }
@@ -134,6 +142,7 @@ export const useNoteStore = create<NoteState>((set, get) => ({
     );
     set({ activeNote: note });
     await get().loadNotes();
+    await get().loadFolders();
     toast.success(i18n.t('toast.noteCreated'));
     return note;
   },
@@ -159,6 +168,10 @@ export const useNoteStore = create<NoteState>((set, get) => ({
       set({ activeNote: null });
     }
     await get().loadNotes();
+    await get().loadFolders();
+    const sidebar = useSidebarStore.getState();
+    sidebar.loadTrash();
+    sidebar.loadTags();
     toast.success(i18n.t('toast.noteMovedToTrash'));
   },
 
@@ -204,6 +217,7 @@ export const useNoteStore = create<NoteState>((set, get) => ({
       activeNote: { ...activeNote, tags },
       notes: get().notes.map((n) => (n.path === path ? { ...n, tags } : n)),
     });
+    useSidebarStore.getState().loadTags();
   },
 
   updateActiveContent: (content: string) => {
@@ -352,5 +366,5 @@ export function extractPreview(content: string, maxLen = 120): string {
     if (lines.length >= 3) break;
   }
   const preview = lines.join(' ');
-  return preview.length > maxLen ? preview.slice(0, maxLen) + '...' : preview;
+  return preview.length > maxLen ? `${preview.slice(0, maxLen)}...` : preview;
 }

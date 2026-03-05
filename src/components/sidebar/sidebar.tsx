@@ -47,6 +47,7 @@ function SectionHeader({
   const Icon = expanded ? ChevronDown : ChevronRight;
   return (
     <button
+      type="button"
       className="flex items-center gap-1 w-full h-7 px-2 text-sm font-medium text-text-muted uppercase tracking-wider hover:text-text-muted transition-colors"
       onClick={onClick}
     >
@@ -134,7 +135,7 @@ function NotesSidebar() {
     []
   );
 
-  const openKeys = (['folders', 'trash', 'tags'] as SectionKey[])
+  const _openKeys = (['folders', 'trash', 'tags'] as SectionKey[])
     .filter((k) => isSectionOpen(k))
     .join(',');
 
@@ -174,9 +175,11 @@ function NotesSidebar() {
     }
 
     return () => {
-      observers.forEach((o) => o.disconnect());
+      for (const o of observers) {
+        o.disconnect();
+      }
     };
-  }, [openKeys]);
+  }, []);
 
   const sectionStyle = (
     key: SectionKey

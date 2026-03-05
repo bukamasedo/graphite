@@ -18,7 +18,7 @@ export function EditorSection() {
           type="number"
           value={settings.fontSize}
           onChange={(e) =>
-            updateSetting('fontSize', parseInt(e.target.value) || 15)
+            updateSetting('fontSize', parseInt(e.target.value, 10) || 15)
           }
           className="w-24 h-8"
           min={10}
@@ -58,7 +58,7 @@ export function EditorSection() {
           type="number"
           value={settings.editorPadding}
           onChange={(e) =>
-            updateSetting('editorPadding', parseInt(e.target.value) || 24)
+            updateSetting('editorPadding', parseInt(e.target.value, 10) || 24)
           }
           className="w-24 h-8"
           min={0}

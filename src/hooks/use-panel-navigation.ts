@@ -44,7 +44,7 @@ export function usePanelNavigation() {
       const hasActive =
         ns.activeNote &&
         ns.notes.some((n) =>
-          isTrash ? n.id === ns.activeNote!.id : n.path === ns.activeNote!.path
+          isTrash ? n.id === ns.activeNote?.id : n.path === ns.activeNote?.path
         );
       if (!hasActive) {
         if (isTrash) {
@@ -153,8 +153,8 @@ export function usePanelNavigation() {
         const currentIdx = ns.activeNote
           ? ns.notes.findIndex((n) =>
               isTrash
-                ? n.id === ns.activeNote!.id
-                : n.path === ns.activeNote!.path
+                ? n.id === ns.activeNote?.id
+                : n.path === ns.activeNote?.path
             )
           : -1;
         let nextIdx: number;

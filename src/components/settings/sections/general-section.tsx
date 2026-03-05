@@ -50,7 +50,7 @@ export function GeneralSection() {
           onChange={(e) =>
             updateSetting(
               'trashRetentionDays',
-              Math.max(1, parseInt(e.target.value) || 30)
+              Math.max(1, parseInt(e.target.value, 10) || 30)
             )
           }
           className="w-24 h-8"

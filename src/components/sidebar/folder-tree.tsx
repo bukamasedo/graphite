@@ -23,6 +23,7 @@ export function FolderTree() {
   } = useIMEGuard();
   const loadFolders = useNoteStore((s) => s.loadFolders);
   const folders = useNoteStore((s) => s.folders);
+  const totalNoteCount = useNoteStore((s) => s.totalNoteCount);
   const selectFolder = useNoteStore((s) => s.selectFolder);
   const activeFolder = useNoteStore((s) => s.activeFolder);
   const moveNote = useNoteStore((s) => s.moveNote);
@@ -60,6 +61,11 @@ export function FolderTree() {
 
   useEffect(() => {
     loadFolders().finally(() => setFoldersLoading(false));
+  }, [loadFolders]);
+
+  const handleStartCreate = useCallback(() => {
+    setCreating(true);
+    setNewName('');
   }, []);
 
   useEffect(() => {
@@ -67,7 +73,7 @@ export function FolderTree() {
     document.addEventListener('graphite:create-folder', handler);
     return () =>
       document.removeEventListener('graphite:create-folder', handler);
-  }, []);
+  }, [handleStartCreate]);
 
   const handleSelect = (folder: string) => {
     useSidebarStore.getState().setSection('folders');
@@ -79,11 +85,6 @@ export function FolderTree() {
       inputRef.current?.focus();
     }
   }, [creating]);
-
-  const handleStartCreate = () => {
-    setCreating(true);
-    setNewName('');
-  };
 
   const handleSubmitCreate = async () => {
     const name = newName.trim();
@@ -114,6 +115,7 @@ export function FolderTree() {
   return (
     <div className="space-y-0.5" role="listbox" aria-label="Folders">
       <button
+        type="button"
         ref={allNotesRef}
         role="option"
         aria-selected={isAllNotesActive}
@@ -136,7 +138,16 @@ export function FolderTree() {
           size={14}
           className={isAllNotesActive ? 'text-accent' : 'text-text-muted'}
         />
-        {t('sidebar.allNotes')}
+        <span className="truncate">{t('sidebar.allNotes')}</span>
+        {totalNoteCount > 0 && (
+          <span
+            className={`text-[10px] flex-shrink-0 min-w-[18px] h-[18px] rounded-full inline-flex items-center justify-center ml-auto ${
+              isAllNotesActive ? 'bg-accent/20 text-accent' : 'text-text-muted'
+            }`}
+          >
+            {totalNoteCount}
+          </span>
+        )}
       </button>
       {folders.map((folder) => (
         <FolderItem
@@ -165,6 +176,7 @@ export function FolderTree() {
         </div>
       ) : (
         <button
+          type="button"
           className="flex items-center gap-2 w-full h-7 px-2 rounded text-[13px] text-text-muted hover:bg-bg-hover hover:text-text-secondary transition-colors duration-100 mt-0.5"
           onClick={handleStartCreate}
         >

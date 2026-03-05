@@ -16,7 +16,7 @@ export function EditorStatusFooter() {
       const timer = setTimeout(() => setShowSaved(false), 2000);
       return () => clearTimeout(timer);
     }
-  }, [dirty]);
+  }, [dirty, activeNote]);
 
   if (!activeNote) return null;
 

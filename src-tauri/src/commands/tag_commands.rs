@@ -19,10 +19,7 @@ pub fn list_tags() -> Result<Vec<TagInfo>, String> {
 
     let mut tag_counts: HashMap<String, usize> = HashMap::new();
 
-    for entry in WalkDir::new(&vault_path)
-        .into_iter()
-        .filter_map(|e| e.ok())
-    {
+    for entry in WalkDir::new(&vault_path).into_iter().filter_map(|e| e.ok()) {
         let path = entry.path();
         if path.extension().is_none_or(|ext| ext != "md") {
             continue;

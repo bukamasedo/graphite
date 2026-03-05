@@ -36,22 +36,22 @@ pub fn read_manifest() -> Result<Vec<TrashEntry>, String> {
     if !path.exists() {
         return Ok(Vec::new());
     }
-    let content = fs::read_to_string(&path)
-        .map_err(|e| format!("Failed to read trash manifest: {}", e))?;
-    serde_json::from_str(&content)
-        .map_err(|e| format!("Failed to parse trash manifest: {}", e))
+    let content =
+        fs::read_to_string(&path).map_err(|e| format!("Failed to read trash manifest: {}", e))?;
+    serde_json::from_str(&content).map_err(|e| format!("Failed to parse trash manifest: {}", e))
 }
 
 pub fn write_manifest(entries: &[TrashEntry]) -> Result<(), String> {
     let path = manifest_path()?;
     let json = serde_json::to_string_pretty(entries)
         .map_err(|e| format!("Failed to serialize trash manifest: {}", e))?;
-    fs::write(&path, json)
-        .map_err(|e| format!("Failed to write trash manifest: {}", e))
+    fs::write(&path, json).map_err(|e| format!("Failed to write trash manifest: {}", e))
 }
 
 pub fn add_to_manifest(entry: TrashEntry) -> Result<(), String> {
-    let _lock = MANIFEST_LOCK.lock().map_err(|e| format!("Manifest lock error: {}", e))?;
+    let _lock = MANIFEST_LOCK
+        .lock()
+        .map_err(|e| format!("Manifest lock error: {}", e))?;
     let mut entries = read_manifest()?;
     entries.push(entry);
     write_manifest(&entries)
@@ -87,7 +87,9 @@ fn extract_preview(content: &str, max_len: usize) -> String {
 
 #[tauri::command]
 pub fn list_trash() -> Result<Vec<TrashItem>, String> {
-    let _lock = MANIFEST_LOCK.lock().map_err(|e| format!("Manifest lock error: {}", e))?;
+    let _lock = MANIFEST_LOCK
+        .lock()
+        .map_err(|e| format!("Manifest lock error: {}", e))?;
     let entries = read_manifest()?;
     let mut live_entries: Vec<TrashEntry> = Vec::new();
     let mut items: Vec<TrashItem> = Vec::new();
@@ -122,7 +124,9 @@ pub fn list_trash() -> Result<Vec<TrashItem>, String> {
 
 #[tauri::command]
 pub fn restore_note(id: String) -> Result<(), String> {
-    let _lock = MANIFEST_LOCK.lock().map_err(|e| format!("Manifest lock error: {}", e))?;
+    let _lock = MANIFEST_LOCK
+        .lock()
+        .map_err(|e| format!("Manifest lock error: {}", e))?;
     let entries = read_manifest()?;
     let entry = entries
         .iter()
@@ -142,8 +146,7 @@ pub fn restore_note(id: String) -> Result<(), String> {
 
     // Ensure parent directory exists
     if let Some(parent) = original.parent() {
-        fs::create_dir_all(parent)
-            .map_err(|e| format!("Failed to create directory: {}", e))?;
+        fs::create_dir_all(parent).map_err(|e| format!("Failed to create directory: {}", e))?;
     }
 
     // If original path is occupied, find a unique name
@@ -153,7 +156,8 @@ pub fn restore_note(id: String) -> Result<(), String> {
             .unwrap_or_default()
             .to_string_lossy()
             .to_string();
-        let parent = original.parent()
+        let parent = original
+            .parent()
             .ok_or("Invalid restore path: no parent directory")?;
         let mut counter = 1;
         loop {
@@ -178,7 +182,9 @@ pub fn restore_note(id: String) -> Result<(), String> {
 
 #[tauri::command]
 pub fn permanently_delete_trash(id: String) -> Result<(), String> {
-    let _lock = MANIFEST_LOCK.lock().map_err(|e| format!("Manifest lock error: {}", e))?;
+    let _lock = MANIFEST_LOCK
+        .lock()
+        .map_err(|e| format!("Manifest lock error: {}", e))?;
     let entries = read_manifest()?;
     let entry = entries.iter().find(|e| e.id == id);
 
@@ -186,11 +192,9 @@ pub fn permanently_delete_trash(id: String) -> Result<(), String> {
         let trash_path = std::path::Path::new(&entry.trash_path);
         if trash_path.exists() {
             if trash_path.is_dir() {
-                fs::remove_dir_all(trash_path)
-                    .map_err(|e| format!("Failed to delete: {}", e))?;
+                fs::remove_dir_all(trash_path).map_err(|e| format!("Failed to delete: {}", e))?;
             } else {
-                fs::remove_file(trash_path)
-                    .map_err(|e| format!("Failed to delete: {}", e))?;
+                fs::remove_file(trash_path).map_err(|e| format!("Failed to delete: {}", e))?;
             }
         }
     }
@@ -203,7 +207,9 @@ pub fn permanently_delete_trash(id: String) -> Result<(), String> {
 
 #[tauri::command]
 pub fn empty_trash() -> Result<(), String> {
-    let _lock = MANIFEST_LOCK.lock().map_err(|e| format!("Manifest lock error: {}", e))?;
+    let _lock = MANIFEST_LOCK
+        .lock()
+        .map_err(|e| format!("Manifest lock error: {}", e))?;
     let entries = read_manifest()?;
     for entry in &entries {
         let path = std::path::Path::new(&entry.trash_path);
@@ -221,7 +227,9 @@ pub fn empty_trash() -> Result<(), String> {
 
 #[tauri::command]
 pub fn purge_expired_trash(retention_days: u32) -> Result<u32, String> {
-    let _lock = MANIFEST_LOCK.lock().map_err(|e| format!("Manifest lock error: {}", e))?;
+    let _lock = MANIFEST_LOCK
+        .lock()
+        .map_err(|e| format!("Manifest lock error: {}", e))?;
     let entries = read_manifest()?;
     let now = Utc::now();
     let mut kept = Vec::new();
@@ -266,15 +274,21 @@ pub fn read_trash_note(id: String) -> Result<Note, String> {
         return Err("Trash file no longer exists".to_string());
     }
 
-    let content = fs::read_to_string(trash_path)
-        .map_err(|e| format!("Failed to read trash note: {}", e))?;
+    let content =
+        fs::read_to_string(trash_path).map_err(|e| format!("Failed to read trash note: {}", e))?;
 
     let (fm, body) = parse_frontmatter(&content);
 
-    let title = fm.as_ref().map(|f| f.title.clone()).unwrap_or_else(|| entry.title.clone());
+    let title = fm
+        .as_ref()
+        .map(|f| f.title.clone())
+        .unwrap_or_else(|| entry.title.clone());
     let tags = fm.as_ref().map(|f| f.tags.clone()).unwrap_or_default();
     let created = fm.as_ref().map(|f| f.created.clone()).unwrap_or_default();
-    let modified = fm.as_ref().map(|f| f.modified.clone()).unwrap_or_else(|| entry.deleted_at.clone());
+    let modified = fm
+        .as_ref()
+        .map(|f| f.modified.clone())
+        .unwrap_or_else(|| entry.deleted_at.clone());
 
     Ok(Note {
         id: entry.id.clone(),

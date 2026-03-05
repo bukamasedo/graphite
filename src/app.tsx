@@ -9,7 +9,6 @@ import { trashApi } from '@/lib/api/trash-api';
 import { CheatSheetModal } from './components/cheat-sheet/cheat-sheet-modal';
 import { AppLayout } from './components/layout/app-layout';
 import { OnboardingModal } from './components/onboarding/onboarding-modal';
-import { UpdateToast } from './components/update-toast';
 import { TrashModal } from './components/trash/trash-modal';
 import {
   AlertDialog,
@@ -22,6 +21,7 @@ import {
 } from './components/ui/alert-dialog';
 import { Toaster } from './components/ui/sonner';
 import { TooltipProvider } from './components/ui/tooltip';
+import { UpdateToast } from './components/update-toast';
 import { useCommandHotkeys } from './hooks/use-command-hotkeys';
 import { useCustomCSS } from './hooks/use-custom-css';
 import { usePanelNavigation } from './hooks/use-panel-navigation';
@@ -75,13 +75,13 @@ export function App() {
     return () => {
       unlisten.then((fn) => fn());
     };
-  }, []);
+  }, [init, loadHotkeys, loadNotes, loadSettings]);
 
   useEffect(() => {
     if (settingsLoaded && !settings.hasSeenOnboarding) {
       setShowOnboarding(true);
     }
-  }, [settingsLoaded]);
+  }, [settingsLoaded, settings.hasSeenOnboarding]);
 
   // Check for updates after app is fully initialized
   const [pendingUpdate, setPendingUpdate] = useState<Awaited<
