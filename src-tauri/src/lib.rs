@@ -3,8 +3,8 @@ mod models;
 mod utils;
 
 use serde::Deserialize;
-use tauri::{AppHandle, Emitter, Manager};
 use tauri::menu::{Menu, MenuItem, PredefinedMenuItem, Submenu};
+use tauri::{AppHandle, Emitter, Manager};
 
 #[cfg(target_os = "macos")]
 use window_vibrancy::{apply_vibrancy, NSVisualEffectMaterial};
@@ -29,7 +29,9 @@ fn set_traffic_light_position(window: &tauri::WebviewWindow, x: f64, y_from_top:
 
     unsafe {
         let ns_view: &NSView = &*ns_view_ptr;
-        let Some(ns_window) = ns_view.window() else { return };
+        let Some(ns_window) = ns_view.window() else {
+            return;
+        };
 
         let buttons = [
             NSWindowButton::CloseButton,
@@ -120,69 +122,158 @@ impl Default for MenuLabels {
     }
 }
 
-fn build_menu_with_labels(handle: &AppHandle, labels: &MenuLabels) -> Result<Menu<tauri::Wry>, Box<dyn std::error::Error>> {
-    let app_menu = Submenu::with_items(handle, "Graphite", true, &[
-        &PredefinedMenuItem::about(handle, Some(&labels.about), None)?,
-        &PredefinedMenuItem::separator(handle)?,
-        &MenuItem::with_id(handle, "app:open-settings", &labels.settings, true, Some("CmdOrCtrl+,"))?,
-        &PredefinedMenuItem::separator(handle)?,
-        &PredefinedMenuItem::hide(handle, Some(&labels.hide))?,
-        &PredefinedMenuItem::hide_others(handle, Some(&labels.hide_others))?,
-        &PredefinedMenuItem::show_all(handle, Some(&labels.show_all))?,
-        &PredefinedMenuItem::separator(handle)?,
-        &PredefinedMenuItem::quit(handle, Some(&labels.quit))?,
-    ])?;
+fn build_menu_with_labels(
+    handle: &AppHandle,
+    labels: &MenuLabels,
+) -> Result<Menu<tauri::Wry>, Box<dyn std::error::Error>> {
+    let app_menu = Submenu::with_items(
+        handle,
+        "Graphite",
+        true,
+        &[
+            &PredefinedMenuItem::about(handle, Some(&labels.about), None)?,
+            &PredefinedMenuItem::separator(handle)?,
+            &MenuItem::with_id(
+                handle,
+                "app:open-settings",
+                &labels.settings,
+                true,
+                Some("CmdOrCtrl+,"),
+            )?,
+            &PredefinedMenuItem::separator(handle)?,
+            &PredefinedMenuItem::hide(handle, Some(&labels.hide))?,
+            &PredefinedMenuItem::hide_others(handle, Some(&labels.hide_others))?,
+            &PredefinedMenuItem::show_all(handle, Some(&labels.show_all))?,
+            &PredefinedMenuItem::separator(handle)?,
+            &PredefinedMenuItem::quit(handle, Some(&labels.quit))?,
+        ],
+    )?;
 
-    let file_menu = Submenu::with_items(handle, &labels.file, true, &[
-        &MenuItem::with_id(handle, "note:create", &labels.new_note, true, Some("CmdOrCtrl+N"))?,
-        &MenuItem::with_id(handle, "folder:create", &labels.new_folder, true, Some("CmdOrCtrl+Shift+N"))?,
-    ])?;
+    let file_menu = Submenu::with_items(
+        handle,
+        &labels.file,
+        true,
+        &[
+            &MenuItem::with_id(
+                handle,
+                "note:create",
+                &labels.new_note,
+                true,
+                Some("CmdOrCtrl+N"),
+            )?,
+            &MenuItem::with_id(
+                handle,
+                "folder:create",
+                &labels.new_folder,
+                true,
+                Some("CmdOrCtrl+Shift+N"),
+            )?,
+        ],
+    )?;
 
-    let edit_menu = Submenu::with_items(handle, &labels.edit, true, &[
-        &PredefinedMenuItem::undo(handle, Some(&labels.undo))?,
-        &PredefinedMenuItem::redo(handle, Some(&labels.redo))?,
-        &PredefinedMenuItem::separator(handle)?,
-        &PredefinedMenuItem::cut(handle, Some(&labels.cut))?,
-        &PredefinedMenuItem::copy(handle, Some(&labels.copy))?,
-        &PredefinedMenuItem::paste(handle, Some(&labels.paste))?,
-        &PredefinedMenuItem::select_all(handle, Some(&labels.select_all))?,
-    ])?;
+    let edit_menu = Submenu::with_items(
+        handle,
+        &labels.edit,
+        true,
+        &[
+            &PredefinedMenuItem::undo(handle, Some(&labels.undo))?,
+            &PredefinedMenuItem::redo(handle, Some(&labels.redo))?,
+            &PredefinedMenuItem::separator(handle)?,
+            &PredefinedMenuItem::cut(handle, Some(&labels.cut))?,
+            &PredefinedMenuItem::copy(handle, Some(&labels.copy))?,
+            &PredefinedMenuItem::paste(handle, Some(&labels.paste))?,
+            &PredefinedMenuItem::select_all(handle, Some(&labels.select_all))?,
+        ],
+    )?;
 
-    let view_menu = Submenu::with_items(handle, &labels.view, true, &[
-        &MenuItem::with_id(handle, "app:command-palette", &labels.command_palette, true, Some("CmdOrCtrl+P"))?,
-        &MenuItem::with_id(handle, "app:open-search", &labels.search_notes, true, Some("CmdOrCtrl+Shift+F"))?,
-        &PredefinedMenuItem::separator(handle)?,
-        &MenuItem::with_id(handle, "app:reload", &labels.reload, true, Some("CmdOrCtrl+R"))?,
-    ])?;
+    let view_menu = Submenu::with_items(
+        handle,
+        &labels.view,
+        true,
+        &[
+            &MenuItem::with_id(
+                handle,
+                "app:command-palette",
+                &labels.command_palette,
+                true,
+                Some("CmdOrCtrl+P"),
+            )?,
+            &MenuItem::with_id(
+                handle,
+                "app:open-search",
+                &labels.search_notes,
+                true,
+                Some("CmdOrCtrl+Shift+F"),
+            )?,
+            &PredefinedMenuItem::separator(handle)?,
+            &MenuItem::with_id(
+                handle,
+                "app:reload",
+                &labels.reload,
+                true,
+                Some("CmdOrCtrl+R"),
+            )?,
+        ],
+    )?;
 
-    let history_menu = Submenu::with_items(handle, &labels.history, true, &[
-        &MenuItem::with_id(handle, "history:back", &labels.history_back, true, Some("CmdOrCtrl+["))?,
-        &MenuItem::with_id(handle, "history:forward", &labels.history_forward, true, Some("CmdOrCtrl+]"))?,
-        &PredefinedMenuItem::separator(handle)?,
-        &MenuItem::with_id(handle, "history:show", &labels.show_history, true, Some("CmdOrCtrl+Y"))?,
-    ])?;
+    let history_menu = Submenu::with_items(
+        handle,
+        &labels.history,
+        true,
+        &[
+            &MenuItem::with_id(
+                handle,
+                "history:back",
+                &labels.history_back,
+                true,
+                Some("CmdOrCtrl+["),
+            )?,
+            &MenuItem::with_id(
+                handle,
+                "history:forward",
+                &labels.history_forward,
+                true,
+                Some("CmdOrCtrl+]"),
+            )?,
+            &PredefinedMenuItem::separator(handle)?,
+            &MenuItem::with_id(
+                handle,
+                "history:show",
+                &labels.show_history,
+                true,
+                Some("CmdOrCtrl+Y"),
+            )?,
+        ],
+    )?;
 
-    let window_menu = Submenu::with_items(handle, &labels.window, true, &[
-        &PredefinedMenuItem::minimize(handle, Some(&labels.minimize))?,
-        &PredefinedMenuItem::maximize(handle, Some(&labels.zoom))?,
-        &PredefinedMenuItem::separator(handle)?,
-        &PredefinedMenuItem::close_window(handle, Some(&labels.close))?,
-    ])?;
+    let window_menu = Submenu::with_items(
+        handle,
+        &labels.window,
+        true,
+        &[
+            &PredefinedMenuItem::minimize(handle, Some(&labels.minimize))?,
+            &PredefinedMenuItem::maximize(handle, Some(&labels.zoom))?,
+            &PredefinedMenuItem::separator(handle)?,
+            &PredefinedMenuItem::close_window(handle, Some(&labels.close))?,
+        ],
+    )?;
 
-    Ok(Menu::with_items(handle, &[
-        &app_menu,
-        &file_menu,
-        &edit_menu,
-        &view_menu,
-        &history_menu,
-        &window_menu,
-    ])?)
+    Ok(Menu::with_items(
+        handle,
+        &[
+            &app_menu,
+            &file_menu,
+            &edit_menu,
+            &view_menu,
+            &history_menu,
+            &window_menu,
+        ],
+    )?)
 }
 
 #[tauri::command]
 fn rebuild_menu(app: AppHandle, labels: MenuLabels) -> Result<(), String> {
-    let menu = build_menu_with_labels(&app, &labels)
-        .map_err(|e| e.to_string())?;
+    let menu = build_menu_with_labels(&app, &labels).map_err(|e| e.to_string())?;
     app.set_menu(menu).map_err(|e| e.to_string())?;
     Ok(())
 }
@@ -202,6 +293,7 @@ pub fn run() {
             commands::fs_commands::delete_note,
             commands::fs_commands::rename_note,
             commands::folder_commands::list_folders,
+            commands::folder_commands::count_all_notes,
             commands::folder_commands::create_folder,
             commands::folder_commands::delete_folder,
             commands::folder_commands::rename_folder,
@@ -227,11 +319,17 @@ pub fn run() {
             rebuild_menu,
         ])
         .setup(|app| {
-            let window = app.get_webview_window("main")
+            let window = app
+                .get_webview_window("main")
                 .ok_or("Failed to get main window")?;
 
             #[cfg(target_os = "macos")]
-            if let Err(e) = apply_vibrancy(&window, NSVisualEffectMaterial::UnderWindowBackground, None, None) {
+            if let Err(e) = apply_vibrancy(
+                &window,
+                NSVisualEffectMaterial::UnderWindowBackground,
+                None,
+                None,
+            ) {
                 eprintln!("Failed to apply vibrancy: {}", e);
             }
 
@@ -246,13 +344,11 @@ pub fn run() {
 
                 // Reposition after resize/fullscreen (macOS resets positions)
                 let win = window.clone();
-                window.on_window_event(move |event| {
-                    match event {
-                        tauri::WindowEvent::Resized(_) | tauri::WindowEvent::Moved(_) => {
-                            set_traffic_light_position(&win, TRAFFIC_LIGHT_X, TRAFFIC_LIGHT_Y);
-                        }
-                        _ => {}
+                window.on_window_event(move |event| match event {
+                    tauri::WindowEvent::Resized(_) | tauri::WindowEvent::Moved(_) => {
+                        set_traffic_light_position(&win, TRAFFIC_LIGHT_X, TRAFFIC_LIGHT_Y);
                     }
+                    _ => {}
                 });
             }
 

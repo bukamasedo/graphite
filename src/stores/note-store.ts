@@ -19,6 +19,7 @@ interface NoteState {
   activeTrashGroup: string | null;
   folders: Folder[];
   flatFolderPaths: string[];
+  totalNoteCount: number;
   loading: boolean;
   error: string | null;
   sortKey: SortKey;
@@ -80,6 +81,7 @@ export const useNoteStore = create<NoteState>((set, get) => ({
   activeTrashGroup: null,
   folders: [],
   flatFolderPaths: [],
+  totalNoteCount: 0,
   loading: false,
   error: null,
   sortKey: 'modified',
@@ -101,8 +103,15 @@ export const useNoteStore = create<NoteState>((set, get) => ({
 
   loadFolders: async () => {
     try {
-      const folders = await folderApi.listFolders();
-      set({ folders, flatFolderPaths: flattenFolders(folders) });
+      const [folders, totalNoteCount] = await Promise.all([
+        folderApi.listFolders(),
+        folderApi.countAllNotes(),
+      ]);
+      set({
+        folders,
+        flatFolderPaths: flattenFolders(folders),
+        totalNoteCount,
+      });
     } catch (e) {
       console.error('Failed to load folders:', e);
     }
