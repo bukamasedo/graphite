@@ -15,7 +15,7 @@ export function SettingsContent() {
 
   useEffect(() => {
     loadSettings();
-  }, []);
+  }, [loadSettings]);
 
   return (
     <div
@@ -26,7 +26,7 @@ export function SettingsContent() {
         <div className="max-w-2xl mx-auto">
           {settingsSection !== 'about' && (
             <h2 className="text-base font-semibold text-text-secondary capitalize mb-6">
-              {t('settings.' + settingsSection)}
+              {t(`settings.${settingsSection}`)}
             </h2>
           )}
           {settingsSection === 'general' && <GeneralSection />}

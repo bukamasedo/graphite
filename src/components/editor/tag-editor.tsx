@@ -85,6 +85,7 @@ export function TagEditor({ className }: TagEditorProps = {}) {
           <span className="truncate">#{tag}</span>
           {!isTrash && (
             <button
+              type="button"
               onClick={() => removeTag(tag)}
               className="rounded-full p-0.5 hover:bg-primary/20 transition-colors"
             >
@@ -108,7 +109,6 @@ export function TagEditor({ className }: TagEditorProps = {}) {
               setEditing(false);
             }}
             placeholder={t('editor.addTagPlaceholder')}
-            autoFocus
             className="bg-transparent outline-none text-[11px] text-text-secondary placeholder:text-text-muted w-20"
           />
         ) : (

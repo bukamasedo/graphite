@@ -76,7 +76,7 @@ export function HistoryPopover({ children }: { children: React.ReactNode }) {
           break;
       }
     },
-    [displayEntries, focusIndex, handleSelect, toggleHistory]
+    [displayEntries, focusIndex, handleSelect]
   );
 
   // Scroll focused item into view
@@ -110,6 +110,7 @@ export function HistoryPopover({ children }: { children: React.ReactNode }) {
               const isFocused = i === focusIndex;
               return (
                 <button
+                  type="button"
                   key={`${index}-${path}`}
                   onClick={() => handleSelect(path, index)}
                   className={`w-full flex rounded-md items-center gap-2 px-3 py-1.5 text-left transition-colors focus:outline-none ${

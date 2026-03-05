@@ -30,7 +30,7 @@ export function SearchModal() {
       clearTimeout(timerRef.current);
       clear();
     };
-  }, [searchOpen]);
+  }, [searchOpen, clear]);
 
   const handleChange = (value: string) => {
     setQuery(value);
@@ -79,6 +79,8 @@ export function SearchModal() {
         </div>
         <div className="overflow-y-auto max-h-[50vh]">
           {results.map((result, idx) => (
+            // biome-ignore lint/a11y/noStaticElementInteractions: search result item with mouse interaction
+            // biome-ignore lint/a11y/useKeyWithClickEvents: keyboard navigation handled via input onKeyDown
             <div
               key={result.path}
               className={`px-4 py-2.5 cursor-pointer transition-colors ${
@@ -92,9 +94,9 @@ export function SearchModal() {
               </div>
               {result.matches
                 .slice(0, 2)
-                .map((match: { line: number; content: string }, mi: number) => (
+                .map((match: { line: number; content: string }) => (
                   <div
-                    key={mi}
+                    key={match.line}
                     className="text-xs text-text-secondary mt-0.5 truncate"
                   >
                     <span className="text-text-muted mr-1">L{match.line}:</span>

@@ -59,7 +59,7 @@ function matchesEvent(parsed: ParsedHotkey, e: KeyboardEvent): boolean {
 }
 
 export function useCommandHotkeys() {
-  const overrides = useHotkeyStore((s) => s.overrides);
+  const _overrides = useHotkeyStore((s) => s.overrides);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -86,5 +86,5 @@ export function useCommandHotkeys() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [overrides]);
+  }, []);
 }

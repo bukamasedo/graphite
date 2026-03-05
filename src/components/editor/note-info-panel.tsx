@@ -57,7 +57,7 @@ export function NoteInfoPanel() {
       if (exported) {
         toast.success(t('toast.exported'));
       }
-    } catch (e) {
+    } catch (_e) {
       toast.error(t('toast.exportFailed'));
     }
   };
@@ -92,9 +92,10 @@ export function NoteInfoPanel() {
               >
                 {activeNote.title || t('editor.untitled')}
               </div>
-              {headings.map((heading, i) => (
+              {headings.map((heading, _i) => (
                 <button
-                  key={`${heading.pos}-${i}`}
+                  type="button"
+                  key={`${heading.pos}-${heading.text}`}
                   className="block w-full text-left text-[12px] text-text-secondary hover:text-text-primary rounded px-1 py-0.5 hover:bg-white/5 transition-colors truncate"
                   style={{ paddingLeft: `${(heading.level - 1) * 12 + 4}px` }}
                   onClick={() => {

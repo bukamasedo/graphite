@@ -8,6 +8,7 @@ import './styles/theme.css';
 import './styles/animations.css';
 import 'katex/dist/katex.min.css';
 
+// biome-ignore lint/style/noNonNullAssertion: root element guaranteed to exist in index.html
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ErrorBoundary>

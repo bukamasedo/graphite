@@ -42,6 +42,7 @@ export function TitleBar() {
   };
 
   return (
+    // biome-ignore lint/a11y/noStaticElementInteractions: titlebar drag region
     <div
       data-tauri-drag-region
       className="fixed top-0 left-0 right-0 flex items-center select-none"

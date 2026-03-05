@@ -75,13 +75,13 @@ export function App() {
     return () => {
       unlisten.then((fn) => fn());
     };
-  }, []);
+  }, [init, loadHotkeys, loadNotes, loadSettings]);
 
   useEffect(() => {
     if (settingsLoaded && !settings.hasSeenOnboarding) {
       setShowOnboarding(true);
     }
-  }, [settingsLoaded]);
+  }, [settingsLoaded, settings.hasSeenOnboarding]);
 
   // Check for updates after app is fully initialized
   const [pendingUpdate, setPendingUpdate] = useState<Awaited<

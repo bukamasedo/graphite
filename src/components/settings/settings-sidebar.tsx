@@ -35,12 +35,12 @@ export function SettingsSidebar() {
 
   const sections = sectionKeys.map((id) => ({
     id,
-    label: t('settings.' + id),
+    label: t(`settings.${id}`),
   }));
 
   const bottomSections = bottomSectionKeys.map((id) => ({
     id,
-    label: t('settings.' + id),
+    label: t(`settings.${id}`),
   }));
 
   return (

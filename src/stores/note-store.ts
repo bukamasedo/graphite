@@ -66,7 +66,6 @@ function sortNotes(notes: NoteListItem[], key: SortKey): NoteListItem[] {
         return a.title.localeCompare(b.title);
       case 'created':
         return b.created.localeCompare(a.created);
-      case 'modified':
       default:
         return b.modified.localeCompare(a.modified);
     }
@@ -352,5 +351,5 @@ export function extractPreview(content: string, maxLen = 120): string {
     if (lines.length >= 3) break;
   }
   const preview = lines.join(' ');
-  return preview.length > maxLen ? preview.slice(0, maxLen) + '...' : preview;
+  return preview.length > maxLen ? `${preview.slice(0, maxLen)}...` : preview;
 }

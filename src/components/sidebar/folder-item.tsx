@@ -15,7 +15,6 @@ import {
 import { useIMEGuard } from '@/hooks/use-ime-guard';
 import { showNativeContextMenu } from '@/lib/native-context-menu';
 import { useNoteStore } from '@/stores/note-store';
-import { useSidebarStore } from '@/stores/sidebar-store';
 import type { Folder } from '../../types/note';
 
 interface FolderItemProps {
@@ -157,6 +156,8 @@ export function FolderItem({
 
   return (
     <div>
+      {/* biome-ignore lint/a11y/useFocusableInteractive: keyboard navigation handled at list level */}
+      {/* biome-ignore lint/a11y/useKeyWithClickEvents: keyboard navigation handled at list level */}
       <div
         ref={itemRef}
         role="option"
@@ -178,6 +179,8 @@ export function FolderItem({
         onDrop={handleDrop}
       >
         {hasChildren && (
+          // biome-ignore lint/a11y/useKeyWithClickEvents: parent handles keyboard navigation
+          // biome-ignore lint/a11y/noStaticElementInteractions: chevron toggle within interactive parent
           <span
             className="-mr-1 text-text-muted hover:text-text-secondary transition-colors duration-100"
             onClick={(e) => {

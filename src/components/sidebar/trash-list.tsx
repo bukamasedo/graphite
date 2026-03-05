@@ -40,7 +40,7 @@ export function TrashList() {
   );
   const loadNotes = useNoteStore((s) => s.loadNotes);
   const loadFolders = useNoteStore((s) => s.loadFolders);
-  const notes = useNoteStore((s) => s.notes);
+  const _notes = useNoteStore((s) => s.notes);
 
   const groups = useMemo(
     () => computeTrashGroups(items, vaultPath),
@@ -50,7 +50,7 @@ export function TrashList() {
   useEffect(() => {
     if (section === 'trash')
       activeRef.current?.scrollIntoView({ block: 'nearest' });
-  }, [activeIndex, section]);
+  }, [section]);
 
   useEffect(() => {
     loadTrash();
@@ -58,7 +58,7 @@ export function TrashList() {
 
   useEffect(() => {
     loadTrash();
-  }, [loadTrash, notes]);
+  }, [loadTrash]);
 
   // Listen for restore/delete events from keyboard shortcuts
   useEffect(() => {
@@ -99,7 +99,7 @@ export function TrashList() {
         handleDelete
       );
     };
-  }, [section, activeIndex, groups]);
+  }, [section, activeIndex, groups, loadFolders, loadNotes, restoreNote]);
 
   const handleRestoreGroup = async (groupFolder: string) => {
     const group = groups.find((g) => g.folder === groupFolder);
@@ -188,6 +188,8 @@ export function TrashList() {
         onContextMenu={handleSectionContextMenu}
       >
         {groups.map((group, index) => (
+          // biome-ignore lint/a11y/useFocusableInteractive: keyboard navigation handled at list level
+          // biome-ignore lint/a11y/useKeyWithClickEvents: keyboard navigation handled at list level
           <div
             key={group.folder === '' ? '__all__' : group.folder}
             ref={isGroupActive(index) ? activeRef : undefined}

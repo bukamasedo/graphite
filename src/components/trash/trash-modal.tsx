@@ -39,7 +39,7 @@ export function TrashModal() {
       setLoading(true);
       loadTrash().finally(() => setLoading(false));
     }
-  }, [trashOpen]);
+  }, [trashOpen, loadTrash]);
 
   useEffect(() => {
     setItems(trashItems);
