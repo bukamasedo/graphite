@@ -9,7 +9,9 @@ export function Editor() {
   const activeTrashGroup = useNoteStore((s) => s.activeTrashGroup);
 
   const handleSave = useCallback(
-    (content: string) => saveNote(activeNote?.path, content),
+    (content: string) => {
+      if (activeNote?.path) saveNote(activeNote.path, content);
+    },
     [activeNote?.path, saveNote]
   );
 

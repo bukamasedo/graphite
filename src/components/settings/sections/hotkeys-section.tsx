@@ -151,7 +151,7 @@ function HotkeyRow({
               {t('settings.recording')}
             </Kbd>
           ) : (
-            <Shortcut keys={cmd.hotkey?.split('+')} />
+            <Shortcut keys={cmd.hotkey?.split('+') ?? []} />
           )}
         </button>
         {isOverridden && (
