@@ -272,7 +272,7 @@ export function NoteListItem({ note }: Props) {
             </>
           )}
         </div>
-        <div className="text-[12px] text-text-secondary truncate">
+        <div className="text-[12px] text-text-muted truncate">
           {note.preview || t('noteList.emptyNote')}
         </div>
         <div className="flex items-center gap-1.5 mt-1.5 overflow-hidden">

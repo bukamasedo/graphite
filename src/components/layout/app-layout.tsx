@@ -22,8 +22,6 @@ export function AppLayout() {
   const noteInfoVisible = useAppStore((s) => s.noteInfoVisible);
   const setFocusedPanel = useAppStore((s) => s.setFocusedPanel);
   const activeNote = useNoteStore((s) => s.activeNote);
-  const notes = useNoteStore((s) => s.notes);
-  const hasNotes = notes.length > 0;
 
   const sidebarRef = usePanelRef();
   const noteListRef = usePanelRef();
@@ -170,45 +168,41 @@ export function AppLayout() {
                     <NoteList />
                   </div>
                 </Panel>
-                {hasNotes && (
-                  <>
-                    <Separator className="w-px bg-white/[0.06] hover:bg-white/[0.12] active:bg-accent/30 transition-colors duration-150" />
-                    <Panel id="editor" defaultSize="73%" minSize="37%">
-                      {/* biome-ignore lint/a11y/noStaticElementInteractions: panel focus tracking wrapper */}
-                      <div
-                        role="presentation"
-                        onClick={() => setFocusedPanel('editor')}
-                        onKeyDown={() => {}}
-                        className="h-full overflow-hidden"
-                      >
-                        <EditorArea />
-                      </div>
-                    </Panel>
-                    <Separator
-                      className={`w-px transition-colors duration-150 ${activeNote ? 'bg-white/[0.06] hover:bg-white/[0.12] active:bg-accent/30' : 'bg-transparent'}`}
-                    />
-                    <Panel
-                      panelRef={noteInfoRef}
-                      id="noteinfo"
-                      defaultSize="22%"
-                      minSize="15%"
-                      maxSize="35%"
-                      collapsible
-                      collapsedSize="0%"
-                      onResize={handleNoteInfoResize}
-                    >
-                      {/* biome-ignore lint/a11y/noStaticElementInteractions: panel focus tracking wrapper */}
-                      <div
-                        role="presentation"
-                        onClick={() => setFocusedPanel('noteinfo')}
-                        onKeyDown={() => {}}
-                        className="h-full overflow-hidden"
-                      >
-                        <NoteInfoPanel />
-                      </div>
-                    </Panel>
-                  </>
-                )}
+                <Separator className="w-px bg-white/[0.06] hover:bg-white/[0.12] active:bg-accent/30 transition-colors duration-150" />
+                <Panel id="editor" defaultSize="73%" minSize="37%">
+                  {/* biome-ignore lint/a11y/noStaticElementInteractions: panel focus tracking wrapper */}
+                  <div
+                    role="presentation"
+                    onClick={() => setFocusedPanel('editor')}
+                    onKeyDown={() => {}}
+                    className="h-full overflow-hidden"
+                  >
+                    <EditorArea />
+                  </div>
+                </Panel>
+                <Separator
+                  className={`w-px transition-colors duration-150 ${activeNote ? 'bg-white/[0.06] hover:bg-white/[0.12] active:bg-accent/30' : 'bg-transparent'}`}
+                />
+                <Panel
+                  panelRef={noteInfoRef}
+                  id="noteinfo"
+                  defaultSize="22%"
+                  minSize="15%"
+                  maxSize="35%"
+                  collapsible
+                  collapsedSize="0%"
+                  onResize={handleNoteInfoResize}
+                >
+                  {/* biome-ignore lint/a11y/noStaticElementInteractions: panel focus tracking wrapper */}
+                  <div
+                    role="presentation"
+                    onClick={() => setFocusedPanel('noteinfo')}
+                    onKeyDown={() => {}}
+                    className="h-full overflow-hidden"
+                  >
+                    <NoteInfoPanel />
+                  </div>
+                </Panel>
               </Group>
             </div>
           </div>
