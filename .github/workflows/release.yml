@@ -75,3 +75,62 @@ jobs:
           releaseDraft: true
           prerelease: false
           args: ${{ matrix.args }}
+
+  update-homebrew:
+    needs: [release]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Get release info
+        id: release
+        run: |
+          TAG="${{ github.ref_name }}"
+          VERSION="${TAG#v}"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "dmg_url=https://github.com/bukamasedo/graphite/releases/download/${TAG}/Graphite_${VERSION}_aarch64.dmg" >> "$GITHUB_OUTPUT"
+
+      - name: Download DMG and compute SHA256
+        id: sha
+        run: |
+          curl -fSL "${{ steps.release.outputs.dmg_url }}" -o graphite.dmg
+          SHA256=$(sha256sum graphite.dmg | awk '{print $1}')
+          echo "sha256=${SHA256}" >> "$GITHUB_OUTPUT"
+
+      - name: Update Homebrew Cask
+        env:
+          HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+        run: |
+          VERSION="${{ steps.release.outputs.version }}"
+          SHA256="${{ steps.sha.outputs.sha256 }}"
+
+          git clone "https://x-access-token:${HOMEBREW_TAP_TOKEN}@github.com/bukamasedo/homebrew-tap.git" tap
+          mkdir -p tap/Casks
+
+          cat > tap/Casks/graphite-notes.rb <<RUBY
+          cask "graphite-notes" do
+            version "${VERSION}"
+            sha256 "${SHA256}"
+
+            url "https://github.com/bukamasedo/graphite/releases/download/v#{version}/Graphite_#{version}_aarch64.dmg"
+            name "Graphite"
+            desc "Local-first markdown note-taking app"
+            homepage "https://github.com/bukamasedo/graphite"
+
+            app "Graphite.app"
+
+            zap trash: [
+              "~/Library/Application Support/com.graphite.app",
+              "~/Library/Caches/com.graphite.app",
+              "~/Library/Preferences/com.graphite.app.plist",
+            ]
+          end
+          RUBY
+
+          cd tap
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Casks/graphite-notes.rb
+          git commit -m "Update graphite-notes to ${VERSION}"
+          git push
