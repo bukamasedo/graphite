@@ -90,8 +90,9 @@ export const useNoteStore = create<NoteState>((set, get) => ({
     set({ loading: true, error: null });
     try {
       const currentTag = tag ?? get().activeTag;
+      const resolvedFolder = (folder ?? get().activeFolder) || null;
       const raw = await noteApi.listNotes(
-        currentTag ? null : (folder ?? (get().activeFolder || null)),
+        currentTag ? null : resolvedFolder,
         currentTag ?? null
       );
       set({ notes: sortNotes(raw, get().sortKey), loading: false });
