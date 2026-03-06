@@ -14,6 +14,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  user-select: none;
 }
 
 html,
@@ -52,6 +53,11 @@ body,
 }
 
 input,
+textarea {
+  user-select: text;
+}
+
+input,
 textarea,
 button {
   font-family: inherit;
@@ -76,6 +82,7 @@ a:hover {
   line-height: var(--editor-line-height, 1.7);
   caret-color: var(--accent-color);
   min-height: 100%;
+  user-select: text;
 }
 
 .tiptap-editor .ProseMirror ::selection {
