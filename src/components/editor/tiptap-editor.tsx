@@ -19,6 +19,7 @@ import { extractPreview, useNoteStore } from '@/stores/note-store';
 import { useSettingsStore } from '@/stores/settings-store';
 import { CodeBlockView } from './code-block-view';
 import { LinkBubbleMenu } from './link-bubble-menu';
+import { TrailingNewline } from './trailing-newline';
 
 const lowlight = createLowlight(common);
 
@@ -93,6 +94,7 @@ export function TiptapEditor({
         transformPastedText: true,
         transformCopiedText: true,
       }),
+      TrailingNewline,
     ],
     content: initialContent,
     autofocus: false,
