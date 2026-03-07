@@ -56,6 +56,15 @@ export function folderFromPath(notePath: string, vaultPath: string): string {
   return lastSlash >= 0 ? rel.substring(0, lastSlash) : '';
 }
 
+export function sanitizeFilename(name: string): string {
+  // Remove characters unsafe for filesystems: / \ : * ? " < > | and null byte
+  const sanitized = name.replace(/[/\\:*?"<>|\0]/g, '').trim();
+  if (sanitized.length === 0) {
+    throw new Error('Invalid filename: name is empty after sanitization');
+  }
+  return sanitized;
+}
+
 export function isHiddenPath(filePath: string): boolean {
   return filePath.split('/').some((segment) => segment.startsWith('.'));
 }

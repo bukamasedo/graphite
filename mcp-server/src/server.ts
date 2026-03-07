@@ -418,17 +418,30 @@ export function createServer(): McpServer {
     'graphite://notes/{path}',
     { description: 'Read individual note content' },
     async (uri) => {
-      const notePath = uri.pathname.replace(/^\/\//, '/');
-      const note = readNote(notePath);
-      return {
-        contents: [
-          {
-            uri: uri.href,
-            mimeType: 'text/markdown',
-            text: note.content,
-          },
-        ],
-      };
+      try {
+        const notePath = uri.pathname.replace(/^\/\//, '/');
+        const note = readNote(notePath);
+        return {
+          contents: [
+            {
+              uri: uri.href,
+              mimeType: 'text/markdown',
+              text: note.content,
+            },
+          ],
+        };
+      } catch (e) {
+        const message = e instanceof Error ? e.message : String(e);
+        return {
+          contents: [
+            {
+              uri: uri.href,
+              mimeType: 'text/plain',
+              text: `Error: ${message}`,
+            },
+          ],
+        };
+      }
     }
   );
 

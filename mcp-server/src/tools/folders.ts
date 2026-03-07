@@ -10,7 +10,12 @@ import {
 import { basename, dirname, join } from 'node:path';
 import { parseFrontmatter } from '../frontmatter.js';
 import { readTrashManifest, writeTrashManifest } from '../trash.js';
-import { ensureWithinVault, getTrashDir, getVaultPath } from '../vault.js';
+import {
+  ensureWithinVault,
+  getTrashDir,
+  getVaultPath,
+  sanitizeFilename,
+} from '../vault.js';
 
 interface Folder {
   name: string;
@@ -146,8 +151,9 @@ export function deleteFolder(path: string): void {
 export function renameFolder(path: string, newName: string): string {
   ensureWithinVault(path);
 
+  const safeName = sanitizeFilename(newName);
   const parent = dirname(path);
-  const newPath = join(parent, newName);
+  const newPath = join(parent, safeName);
   ensureWithinVault(newPath);
 
   if (existsSync(newPath)) {

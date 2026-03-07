@@ -28,6 +28,7 @@ import {
   getTrashDir,
   getVaultPath,
   isHiddenPath,
+  sanitizeFilename,
 } from '../vault.js';
 
 export function listNotes(folder?: string, tag?: string): NoteListItem[] {
@@ -95,7 +96,7 @@ export function readNote(path: string): Note {
 
 export function createNote(folder?: string, title?: string): Note {
   const vaultPath = getVaultPath();
-  const noteTitle = title ?? 'Untitled';
+  const noteTitle = sanitizeFilename(title ?? 'Untitled');
 
   const dir = folder ? ensureWithinVault(join(vaultPath, folder)) : vaultPath;
 
@@ -187,8 +188,9 @@ export function deleteNote(path: string): void {
 export function renameNote(path: string, newTitle: string): string {
   ensureWithinVault(path);
 
+  const safeName = sanitizeFilename(newTitle);
   const dir = dirname(path);
-  const newPath = join(dir, `${newTitle}.md`);
+  const newPath = join(dir, `${safeName}.md`);
   ensureWithinVault(newPath);
 
   if (existsSync(newPath)) {
