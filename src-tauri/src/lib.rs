@@ -317,8 +317,8 @@ pub fn run() {
             commands::move_commands::move_note,
             commands::menu_commands::show_context_menu,
             commands::mcp_commands::get_mcp_binary_path,
-            commands::mcp_commands::configure_claude_desktop,
-            commands::mcp_commands::remove_claude_desktop,
+            commands::mcp_commands::configure_mcp_client,
+            commands::mcp_commands::remove_mcp_client,
             rebuild_menu,
         ])
         .setup(|app| {

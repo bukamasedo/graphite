@@ -40,30 +40,31 @@ pub fn get_mcp_binary_path() -> Result<String, String> {
     Err(format!("MCP server binary not found: {}", binary_name))
 }
 
-fn claude_desktop_config_path() -> Result<PathBuf, String> {
+/// Get the config file path for a given MCP client.
+fn mcp_client_config_path(client_id: &str) -> Result<PathBuf, String> {
     let home = dirs::home_dir().ok_or("Cannot determine home directory")?;
-    let path = if cfg!(target_os = "macos") {
-        home.join("Library")
-            .join("Application Support")
-            .join("Claude")
-            .join("claude_desktop_config.json")
-    } else if cfg!(target_os = "windows") {
-        home.join("AppData")
-            .join("Roaming")
-            .join("Claude")
-            .join("claude_desktop_config.json")
-    } else {
-        home.join(".config")
-            .join("Claude")
-            .join("claude_desktop_config.json")
+    let path = match client_id {
+        "claude-desktop" => {
+            if cfg!(target_os = "macos") {
+                home.join("Library/Application Support/Claude/claude_desktop_config.json")
+            } else if cfg!(target_os = "windows") {
+                home.join("AppData/Roaming/Claude/claude_desktop_config.json")
+            } else {
+                home.join(".config/Claude/claude_desktop_config.json")
+            }
+        }
+        "cursor" => home.join(".cursor/mcp.json"),
+        "windsurf" => home.join(".codeium/windsurf/mcp_config.json"),
+        _ => return Err(format!("Unknown MCP client: {}", client_id)),
     };
     Ok(path)
 }
 
+/// Write graphite MCP server entry to a client's config file
 #[tauri::command]
-pub fn configure_claude_desktop() -> Result<(), String> {
+pub fn configure_mcp_client(client_id: String) -> Result<(), String> {
     let binary_path = get_mcp_binary_path()?;
-    let config_path = claude_desktop_config_path()?;
+    let config_path = mcp_client_config_path(&client_id)?;
 
     if let Some(parent) = config_path.parent() {
         fs::create_dir_all(parent)
@@ -72,9 +73,8 @@ pub fn configure_claude_desktop() -> Result<(), String> {
 
     let mut config: Value = if config_path.exists() {
         let content = fs::read_to_string(&config_path)
-            .map_err(|e| format!("Failed to read Claude config: {}", e))?;
-        serde_json::from_str(&content)
-            .map_err(|e| format!("Failed to parse Claude config: {}", e))?
+            .map_err(|e| format!("Failed to read config: {}", e))?;
+        serde_json::from_str(&content).map_err(|e| format!("Failed to parse config: {}", e))?
     } else {
         json!({})
     };
@@ -89,24 +89,24 @@ pub fn configure_claude_desktop() -> Result<(), String> {
 
     let content = serde_json::to_string_pretty(&config)
         .map_err(|e| format!("Failed to serialize config: {}", e))?;
-    fs::write(&config_path, content)
-        .map_err(|e| format!("Failed to write Claude config: {}", e))?;
+    fs::write(&config_path, content).map_err(|e| format!("Failed to write config: {}", e))?;
 
     Ok(())
 }
 
+/// Remove graphite MCP server entry from a client's config file
 #[tauri::command]
-pub fn remove_claude_desktop() -> Result<(), String> {
-    let config_path = claude_desktop_config_path()?;
+pub fn remove_mcp_client(client_id: String) -> Result<(), String> {
+    let config_path = mcp_client_config_path(&client_id)?;
 
     if !config_path.exists() {
         return Ok(());
     }
 
-    let content = fs::read_to_string(&config_path)
-        .map_err(|e| format!("Failed to read Claude config: {}", e))?;
-    let mut config: Value = serde_json::from_str(&content)
-        .map_err(|e| format!("Failed to parse Claude config: {}", e))?;
+    let content =
+        fs::read_to_string(&config_path).map_err(|e| format!("Failed to read config: {}", e))?;
+    let mut config: Value =
+        serde_json::from_str(&content).map_err(|e| format!("Failed to parse config: {}", e))?;
 
     if let Some(servers) = config.get_mut("mcpServers") {
         if let Some(obj) = servers.as_object_mut() {
@@ -116,8 +116,7 @@ pub fn remove_claude_desktop() -> Result<(), String> {
 
     let content = serde_json::to_string_pretty(&config)
         .map_err(|e| format!("Failed to serialize config: {}", e))?;
-    fs::write(&config_path, content)
-        .map_err(|e| format!("Failed to write Claude config: {}", e))?;
+    fs::write(&config_path, content).map_err(|e| format!("Failed to write config: {}", e))?;
 
     Ok(())
 }

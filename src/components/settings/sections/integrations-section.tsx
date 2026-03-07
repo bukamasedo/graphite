@@ -5,6 +5,12 @@ import { mcpApi } from '@/lib/api/mcp-api';
 import { useSettingsStore } from '@/stores/settings-store';
 import { SettingRow } from '../setting-row';
 
+const MCP_CLIENTS = [
+  { id: 'claude-desktop', name: 'Claude Desktop' },
+  { id: 'cursor', name: 'Cursor' },
+  { id: 'windsurf', name: 'Windsurf' },
+] as const;
+
 export function IntegrationsSection() {
   const { t } = useTranslation();
   const { settings, updateSetting } = useSettingsStore();
@@ -13,17 +19,22 @@ export function IntegrationsSection() {
     text: string;
   } | null>(null);
 
-  const handleToggle = async (enabled: boolean) => {
+  const handleToggle = async (clientId: string, enabled: boolean) => {
     setMessage(null);
     try {
       if (enabled) {
-        await mcpApi.configureClaude();
+        await mcpApi.configureClient(clientId);
         setMessage({ type: 'success', text: t('settings.mcpConfigured') });
       } else {
-        await mcpApi.removeClaude();
+        await mcpApi.removeClient(clientId);
         setMessage({ type: 'success', text: t('settings.mcpRemoved') });
       }
-      updateSetting('mcpEnabled', enabled);
+
+      const current = settings.mcpClients;
+      const updated = enabled
+        ? [...current, clientId]
+        : current.filter((id) => id !== clientId);
+      updateSetting('mcpClients', updated);
     } catch (e) {
       setMessage({
         type: 'error',
@@ -38,15 +49,17 @@ export function IntegrationsSection() {
     <div className="space-y-1">
       <div className="px-3 pb-2">
         <p className="text-xs text-text-muted">
-          {t('settings.mcpServerDescription')}
+          {t('settings.mcpDescription')}
         </p>
       </div>
-      <SettingRow
-        label={t('settings.mcpServer')}
-        description={t('settings.mcpEnabled')}
-      >
-        <Switch checked={settings.mcpEnabled} onCheckedChange={handleToggle} />
-      </SettingRow>
+      {MCP_CLIENTS.map((client) => (
+        <SettingRow key={client.id} label={client.name} description="MCP">
+          <Switch
+            checked={settings.mcpClients.includes(client.id)}
+            onCheckedChange={(checked) => handleToggle(client.id, checked)}
+          />
+        </SettingRow>
+      ))}
       {message && (
         <p
           className={`text-xs px-3 pt-1 ${
