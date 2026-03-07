@@ -5,3 +5,4 @@ target/
 *.local
 .env
 .env.*
+src-tauri/binaries/

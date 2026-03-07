@@ -39,6 +39,7 @@
     }
   },
   "bundle": {
+    "externalBin": ["binaries/graphite-mcp"],
     "createUpdaterArtifacts": "v1Compatible",
     "active": true,
     "targets": "all",
