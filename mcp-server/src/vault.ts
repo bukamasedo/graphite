@@ -43,7 +43,7 @@ export function ensureWithinVault(targetPath: string): string {
     ? realpathSync(targetPath)
     : resolve(targetPath);
 
-  if (!resolved.startsWith(vaultReal)) {
+  if (resolved !== vaultReal && !resolved.startsWith(vaultReal + '/')) {
     throw new Error('Access denied: path is outside the vault directory');
   }
 

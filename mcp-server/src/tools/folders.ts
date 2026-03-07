@@ -148,6 +148,7 @@ export function renameFolder(path: string, newName: string): string {
 
   const parent = dirname(path);
   const newPath = join(parent, newName);
+  ensureWithinVault(newPath);
 
   if (existsSync(newPath)) {
     throw new Error('A folder with this name already exists');

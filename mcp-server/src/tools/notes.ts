@@ -33,12 +33,9 @@ import {
 export function listNotes(folder?: string, tag?: string): NoteListItem[] {
   const vaultPath = getVaultPath();
 
-  const searchDir =
-    tag != null
-      ? vaultPath
-      : folder
-        ? ensureWithinVault(join(vaultPath, folder))
-        : vaultPath;
+  const searchDir = folder
+    ? ensureWithinVault(join(vaultPath, folder))
+    : vaultPath;
 
   if (!existsSync(searchDir)) return [];
 
@@ -192,6 +189,7 @@ export function renameNote(path: string, newTitle: string): string {
 
   const dir = dirname(path);
   const newPath = join(dir, `${newTitle}.md`);
+  ensureWithinVault(newPath);
 
   if (existsSync(newPath)) {
     throw new Error('A note with this name already exists');
@@ -261,7 +259,8 @@ export function listTrash(): TrashItem[] {
     let preview = '';
     try {
       const content = readFileSync(e.trash_path, 'utf-8');
-      preview = extractPreview(content, 120);
+      const { body } = parseFrontmatter(content);
+      preview = extractPreview(body, 120);
     } catch {
       /* skip */
     }
