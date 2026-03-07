@@ -12,6 +12,7 @@ export interface GraphiteConfig {
   trashRetentionDays: number;
   language: 'en' | 'ja';
   hasSeenOnboarding: boolean;
+  mcpEnabled: boolean;
 }
 
 export const DEFAULT_CONFIG: GraphiteConfig = {
@@ -28,6 +29,7 @@ export const DEFAULT_CONFIG: GraphiteConfig = {
   trashRetentionDays: 30,
   language: 'en',
   hasSeenOnboarding: false,
+  mcpEnabled: false,
 };
 
 export interface HotkeyConfig {

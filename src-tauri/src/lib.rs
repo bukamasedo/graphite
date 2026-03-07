@@ -316,6 +316,9 @@ pub fn run() {
             commands::export_commands::write_export_file,
             commands::move_commands::move_note,
             commands::menu_commands::show_context_menu,
+            commands::mcp_commands::get_mcp_binary_path,
+            commands::mcp_commands::configure_claude_desktop,
+            commands::mcp_commands::remove_claude_desktop,
             rebuild_menu,
         ])
         .setup(|app| {

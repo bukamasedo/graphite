@@ -124,6 +124,13 @@
   "settings.recording": "入力待ち...",
   "settings.resetToDefault": "デフォルトに戻す",
   "settings.resetAllHotkeys": "すべてデフォルトに戻す",
+  "settings.integrations": "連携",
+  "settings.mcpServer": "Claude Desktop",
+  "settings.mcpServerDescription": "MCP を通じて Graphite を Claude Desktop に接続",
+  "settings.mcpEnabled": "連携を有効にする",
+  "settings.mcpConfigured": "Claude Desktop を再起動してください。",
+  "settings.mcpRemoved": "連携を解除しました。Claude Desktop を再起動してください。",
+  "settings.mcpError": "設定に失敗しました: {{error}}",
   "settings.conflictMessage": "競合: そのショートカットは「{{name}}」で使用されています",
 
   "contextMenu.pin": "ピン留め",
