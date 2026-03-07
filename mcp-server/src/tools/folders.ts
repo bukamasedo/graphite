@@ -70,8 +70,9 @@ export function listFolders(): Folder[] {
 
 export function createFolder(name: string, parent?: string): Folder {
   const vaultPath = getVaultPath();
+  const safeName = sanitizeFilename(name);
   const base = parent ? parent : vaultPath;
-  const folderPath = join(base, name);
+  const folderPath = join(base, safeName);
 
   ensureWithinVault(folderPath);
 
