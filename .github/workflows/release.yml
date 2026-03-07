@@ -15,12 +15,16 @@ jobs:
         include:
           - platform: macos-latest
             args: --target aarch64-apple-darwin
-          - platform: macos-latest
+            rust_target: aarch64-apple-darwin
+          - platform: macos-13
             args: --target x86_64-apple-darwin
+            rust_target: x86_64-apple-darwin
           - platform: ubuntu-22.04
             args: ""
+            rust_target: x86_64-unknown-linux-gnu
           - platform: windows-latest
             args: ""
+            rust_target: x86_64-pc-windows-msvc
 
     runs-on: ${{ matrix.platform }}
 
@@ -49,13 +53,30 @@ jobs:
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+          targets: ${{ contains(matrix.platform, 'macos') && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
       - uses: swatinem/rust-cache@v2
         with:
           workspaces: src-tauri
 
       - run: pnpm install
+
+      - name: Build MCP server binary
+        shell: bash
+        run: |
+          cd mcp-server
+          npm install
+          node build.mjs
+
+      - name: Place MCP binary for Tauri bundling
+        shell: bash
+        run: |
+          mkdir -p src-tauri/binaries
+          if [ "${{ matrix.rust_target }}" = "x86_64-pc-windows-msvc" ]; then
+            cp mcp-server/dist/graphite-mcp "src-tauri/binaries/graphite-mcp-${{ matrix.rust_target }}.exe"
+          else
+            cp mcp-server/dist/graphite-mcp "src-tauri/binaries/graphite-mcp-${{ matrix.rust_target }}"
+          fi
 
       - uses: tauri-apps/tauri-action@v0
         env:
