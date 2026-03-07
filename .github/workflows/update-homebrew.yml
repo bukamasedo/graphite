@@ -3,6 +3,11 @@ name: Update Homebrew Cask
 on:
   release:
     types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version (e.g. 0.2.0)"
+        required: true
 
 jobs:
   update-homebrew:
@@ -14,10 +19,14 @@ jobs:
       - name: Get release info
         id: release
         run: |
-          TAG="${{ github.event.release.tag_name }}"
-          VERSION="${TAG#v}"
+          if [ -n "${{ github.event.inputs.version }}" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+          else
+            TAG="${{ github.event.release.tag_name }}"
+            VERSION="${TAG#v}"
+          fi
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
-          echo "dmg_url=https://github.com/bukamasedo/graphite/releases/download/${TAG}/Graphite_${VERSION}_aarch64.dmg" >> "$GITHUB_OUTPUT"
+          echo "dmg_url=https://github.com/bukamasedo/graphite/releases/download/v${VERSION}/Graphite_${VERSION}_aarch64.dmg" >> "$GITHUB_OUTPUT"
 
       - name: Download DMG and compute SHA256
         id: sha
