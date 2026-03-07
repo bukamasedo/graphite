@@ -53,6 +53,15 @@ fn mcp_client_config_path(client_id: &str) -> Result<PathBuf, String> {
                 home.join(".config/Claude/claude_desktop_config.json")
             }
         }
+        "chatgpt" => {
+            if cfg!(target_os = "macos") {
+                home.join("Library/Application Support/com.openai.chat/mcp.json")
+            } else if cfg!(target_os = "windows") {
+                home.join("AppData/Roaming/com.openai.chat/mcp.json")
+            } else {
+                home.join(".config/com.openai.chat/mcp.json")
+            }
+        }
         "cursor" => home.join(".cursor/mcp.json"),
         "windsurf" => home.join(".codeium/windsurf/mcp_config.json"),
         _ => return Err(format!("Unknown MCP client: {}", client_id)),

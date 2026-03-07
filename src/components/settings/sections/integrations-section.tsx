@@ -7,6 +7,7 @@ import { SettingRow } from '../setting-row';
 
 const MCP_CLIENTS = [
   { id: 'claude-desktop', name: 'Claude Desktop' },
+  { id: 'chatgpt', name: 'ChatGPT' },
   { id: 'cursor', name: 'Cursor' },
   { id: 'windsurf', name: 'Windsurf' },
 ] as const;
