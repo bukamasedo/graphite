@@ -1,7 +1,7 @@
-import { build } from 'esbuild';
 import { execSync } from 'child_process';
-import { cpSync, chmodSync, readFileSync } from 'fs';
-import { resolve, dirname } from 'path';
+import { build } from 'esbuild';
+import { chmodSync, cpSync, readFileSync } from 'fs';
+import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -15,7 +15,9 @@ function detectSentinelFuse(nodeBinaryPath) {
   const prefix = 'NODE_SEA_FUSE_';
   const idx = buf.indexOf(prefix);
   if (idx === -1) {
-    throw new Error('Could not find NODE_SEA_FUSE sentinel in the node binary. SEA may not be supported.');
+    throw new Error(
+      'Could not find NODE_SEA_FUSE sentinel in the node binary. SEA may not be supported.'
+    );
   }
   // The fuse is prefix + 32 hex chars
   const fuse = buf.slice(idx, idx + prefix.length + 32).toString();
@@ -59,7 +61,9 @@ chmodSync(outputPath, 0o755);
 // Remove signature (macOS)
 if (process.platform === 'darwin') {
   try {
-    execSync(`codesign --remove-signature "${outputPath}"`, { stdio: 'inherit' });
+    execSync(`codesign --remove-signature "${outputPath}"`, {
+      stdio: 'inherit',
+    });
   } catch {
     console.warn('codesign --remove-signature failed, continuing...');
   }

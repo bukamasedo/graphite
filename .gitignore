@@ -6,3 +6,5 @@ target/
 .env
 .env.*
 src-tauri/binaries/
+.claude/settings.json
+.mcp.json

@@ -43,8 +43,8 @@ export function parseFrontmatter(content: string): {
         frontmatter: {
           title: data.title,
           tags: Array.isArray(data.tags) ? data.tags : [],
-          created: data.created ?? new Date().toISOString(),
-          modified: data.modified ?? new Date().toISOString(),
+          created: String(data.created ?? new Date().toISOString()),
+          modified: String(data.modified ?? new Date().toISOString()),
           pinned: data.pinned ?? false,
         },
         body,
