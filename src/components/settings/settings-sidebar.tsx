@@ -3,6 +3,7 @@ import {
   Info,
   Keyboard,
   Palette,
+  Plug,
   Settings2,
   Type,
 } from 'lucide-react';
@@ -15,6 +16,7 @@ const sectionIcons: Record<SettingsSection, typeof Settings2> = {
   editor: Type,
   appearance: Palette,
   hotkeys: Keyboard,
+  integrations: Plug,
   about: Info,
 };
 
@@ -23,6 +25,7 @@ const sectionKeys: SettingsSection[] = [
   'editor',
   'appearance',
   'hotkeys',
+  'integrations',
 ];
 
 const bottomSectionKeys: SettingsSection[] = ['about'];
