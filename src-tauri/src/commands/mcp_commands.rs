@@ -1,29 +1,43 @@
 use serde_json::{json, Value};
 use std::fs;
 use std::path::PathBuf;
-use tauri::Manager;
 
+/// Resolve the MCP sidecar binary path.
+/// - Production: next to the main executable (Tauri externalBin convention)
+/// - Dev: in src-tauri/binaries/ (compile-time CARGO_MANIFEST_DIR)
 #[tauri::command]
-pub fn get_mcp_binary_path(app_handle: tauri::AppHandle) -> Result<String, String> {
-    let resource_path = app_handle
-        .path()
-        .resource_dir()
-        .map_err(|e| format!("Failed to get resource dir: {}", e))?
-        .join("binaries")
-        .join(if cfg!(target_os = "windows") {
-            "graphite-mcp.exe"
-        } else {
-            "graphite-mcp"
-        });
+pub fn get_mcp_binary_path() -> Result<String, String> {
+    let binary_name = if cfg!(target_os = "windows") {
+        format!("graphite-mcp-{}.exe", env!("TARGET_TRIPLE"))
+    } else {
+        format!("graphite-mcp-{}", env!("TARGET_TRIPLE"))
+    };
 
-    if !resource_path.exists() {
-        return Err("MCP server binary not found".to_string());
+    // Production: sidecar is next to the main binary
+    if let Ok(exe) = std::env::current_exe() {
+        if let Some(dir) = exe.parent() {
+            let path = dir.join(&binary_name);
+            if path.exists() {
+                return path
+                    .to_str()
+                    .map(|s| s.to_string())
+                    .ok_or_else(|| "Invalid binary path encoding".to_string());
+            }
+        }
     }
 
-    resource_path
-        .to_str()
-        .map(|s| s.to_string())
-        .ok_or_else(|| "Invalid binary path encoding".to_string())
+    // Dev: binary is in src-tauri/binaries/
+    let dev_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("binaries")
+        .join(&binary_name);
+    if dev_path.exists() {
+        return dev_path
+            .to_str()
+            .map(|s| s.to_string())
+            .ok_or_else(|| "Invalid binary path encoding".to_string());
+    }
+
+    Err(format!("MCP server binary not found: {}", binary_name))
 }
 
 fn claude_desktop_config_path() -> Result<PathBuf, String> {
@@ -47,8 +61,8 @@ fn claude_desktop_config_path() -> Result<PathBuf, String> {
 }
 
 #[tauri::command]
-pub fn configure_claude_desktop(app_handle: tauri::AppHandle) -> Result<(), String> {
-    let binary_path = get_mcp_binary_path(app_handle)?;
+pub fn configure_claude_desktop() -> Result<(), String> {
+    let binary_path = get_mcp_binary_path()?;
     let config_path = claude_desktop_config_path()?;
 
     if let Some(parent) = config_path.parent() {
