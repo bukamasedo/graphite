@@ -3,6 +3,7 @@ pub mod export_commands;
 pub mod folder_commands;
 pub mod fs_commands;
 pub mod init_commands;
+pub mod mcp_commands;
 pub mod menu_commands;
 pub mod move_commands;
 pub mod search_commands;

@@ -124,6 +124,11 @@
   "settings.recording": "Recording...",
   "settings.resetToDefault": "Reset to default",
   "settings.resetAllHotkeys": "Reset All to Default",
+  "settings.integrations": "Integrations",
+  "settings.mcpDescription": "Connect Graphite to AI tools via MCP",
+  "settings.mcpConfigured": "Configured. Please restart the app to apply.",
+  "settings.mcpRemoved": "Removed. Please restart the app to apply.",
+  "settings.mcpError": "Failed to configure: {{error}}",
   "settings.conflictMessage": "Conflict: that shortcut is already used by \"{{name}}\"",
 
   "contextMenu.pin": "Pin",

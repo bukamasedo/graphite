@@ -124,6 +124,11 @@
   "settings.recording": "入力待ち...",
   "settings.resetToDefault": "デフォルトに戻す",
   "settings.resetAllHotkeys": "すべてデフォルトに戻す",
+  "settings.integrations": "連携",
+  "settings.mcpDescription": "MCP を通じて Graphite を AI ツールに接続",
+  "settings.mcpConfigured": "設定しました。アプリを再起動してください。",
+  "settings.mcpRemoved": "解除しました。アプリを再起動してください。",
+  "settings.mcpError": "設定に失敗しました: {{error}}",
   "settings.conflictMessage": "競合: そのショートカットは「{{name}}」で使用されています",
 
   "contextMenu.pin": "ピン留め",

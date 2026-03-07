@@ -7,6 +7,7 @@ import { AppearanceSection } from './sections/appearance-section';
 import { EditorSection } from './sections/editor-section';
 import { GeneralSection } from './sections/general-section';
 import { HotkeysSection } from './sections/hotkeys-section';
+import { IntegrationsSection } from './sections/integrations-section';
 
 export function SettingsContent() {
   const { t } = useTranslation();
@@ -33,6 +34,7 @@ export function SettingsContent() {
           {settingsSection === 'editor' && <EditorSection />}
           {settingsSection === 'appearance' && <AppearanceSection />}
           {settingsSection === 'hotkeys' && <HotkeysSection />}
+          {settingsSection === 'integrations' && <IntegrationsSection />}
           {settingsSection === 'about' && <AboutSection />}
         </div>
       </div>

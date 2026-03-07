@@ -8,6 +8,7 @@ export type SettingsSection =
   | 'editor'
   | 'appearance'
   | 'hotkeys'
+  | 'integrations'
   | 'about';
 
 interface AppState {
