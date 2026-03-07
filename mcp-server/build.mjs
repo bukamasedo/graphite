@@ -47,7 +47,8 @@ execSync('node --experimental-sea-config sea-config.json', {
 });
 
 // Step 4: Copy node binary and inject blob
-const nodePath = process.execPath;
+// Use NODE_BINARY_PATH env var to override (e.g., for cross-arch SEA builds)
+const nodePath = process.env.NODE_BINARY_PATH || process.execPath;
 const outputName = 'graphite-mcp';
 const outputPath = resolve(__dirname, `dist/${outputName}`);
 

@@ -16,7 +16,7 @@ jobs:
           - platform: macos-latest
             args: --target aarch64-apple-darwin
             rust_target: aarch64-apple-darwin
-          - platform: macos-13
+          - platform: macos-latest
             args: --target x86_64-apple-darwin
             rust_target: x86_64-apple-darwin
           - platform: ubuntu-22.04
@@ -60,6 +60,15 @@ jobs:
           workspaces: src-tauri
 
       - run: pnpm install
+
+      - name: Download x86_64 Node for cross-arch SEA (macOS)
+        if: matrix.rust_target == 'x86_64-apple-darwin'
+        shell: bash
+        run: |
+          NODE_VERSION=$(node -v)
+          curl -fSL "https://nodejs.org/dist/${NODE_VERSION}/node-${NODE_VERSION}-darwin-x64.tar.gz" -o /tmp/node-x64.tar.gz
+          tar -xzf /tmp/node-x64.tar.gz -C /tmp
+          echo "NODE_BINARY_PATH=/tmp/node-${NODE_VERSION}-darwin-x64/bin/node" >> "$GITHUB_ENV"
 
       - name: Build MCP server binary
         shell: bash
