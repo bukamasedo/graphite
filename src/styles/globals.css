@@ -170,6 +170,15 @@ a:hover {
   padding: 16px;
   overflow-x: auto;
   margin: 0;
+  white-space: pre !important;
+  word-wrap: normal;
+}
+
+.tiptap-editor.code-block-wrap .ProseMirror .code-block-wrapper pre {
+  overflow-x: visible;
+  white-space: pre-wrap !important;
+  word-wrap: break-word;
+  word-break: break-all;
 }
 
 .tiptap-editor .ProseMirror .code-block-wrapper pre code {
@@ -190,12 +199,60 @@ a:hover {
   gap: 8px;
   z-index: 1;
   user-select: none;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.15s,
+    visibility 0.15s;
+  will-change: opacity;
 }
 
-.code-block-lang {
+.code-block-wrapper:hover .code-block-header {
+  opacity: 1;
+  visibility: visible;
+}
+
+.code-block-lang-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.code-block-lang-select {
   font-family: var(--font-mono);
   font-size: 12px;
+  line-height: 14px;
   color: var(--text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 2px 16px 2px 6px;
+  border-radius: var(--radius-sm);
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.code-block-lang-icon {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--text-muted);
+}
+
+.code-block-lang-wrapper:hover .code-block-lang-select,
+.code-block-lang-wrapper:hover .code-block-lang-icon,
+.code-block-lang-select:focus,
+.code-block-lang-select:focus + .code-block-lang-icon {
+  color: var(--text-secondary);
+}
+
+.code-block-lang-wrapper:hover,
+.code-block-lang-select:focus {
+  background: var(--bg-hover);
+  border-radius: var(--radius-sm);
 }
 
 .code-block-copy {
