@@ -8,3 +8,4 @@ target/
 src-tauri/binaries/
 .claude/settings.json
 .mcp.json
+.envrc
