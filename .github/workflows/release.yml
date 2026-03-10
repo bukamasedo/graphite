@@ -70,22 +70,11 @@ jobs:
           tar -xzf /tmp/node-x64.tar.gz -C /tmp
           echo "NODE_BINARY_PATH=/tmp/node-${NODE_VERSION}-darwin-x64/bin/node" >> "$GITHUB_ENV"
 
-      - name: Build MCP server binary
+      - name: Build and place MCP server binary
         shell: bash
-        run: |
-          cd mcp-server
-          npm install
-          node build.mjs
-
-      - name: Place MCP binary for Tauri bundling
-        shell: bash
-        run: |
-          mkdir -p src-tauri/binaries
-          if [ "${{ matrix.rust_target }}" = "x86_64-pc-windows-msvc" ]; then
-            cp mcp-server/dist/graphite-mcp "src-tauri/binaries/graphite-mcp-${{ matrix.rust_target }}.exe"
-          else
-            cp mcp-server/dist/graphite-mcp "src-tauri/binaries/graphite-mcp-${{ matrix.rust_target }}"
-          fi
+        env:
+          TARGET_TRIPLE: ${{ matrix.rust_target }}
+        run: pnpm run build:mcp
 
       - uses: tauri-apps/tauri-action@v0
         env:

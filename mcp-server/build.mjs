@@ -24,14 +24,10 @@ function detectSentinelFuse(nodeBinaryPath) {
   return fuse;
 }
 
-// Step 1: TypeScript compile
-console.log('Compiling TypeScript...');
-execSync('npx tsc', { cwd: __dirname, stdio: 'inherit' });
-
-// Step 2: Bundle to single CJS file (Node SEA requires CJS)
+// Step 1: Bundle TypeScript source directly to single CJS file (Node SEA requires CJS)
 console.log('Bundling with esbuild...');
 await build({
-  entryPoints: [resolve(__dirname, 'dist/index.js')],
+  entryPoints: [resolve(__dirname, 'src/index.ts')],
   bundle: true,
   platform: 'node',
   target: 'node20',
