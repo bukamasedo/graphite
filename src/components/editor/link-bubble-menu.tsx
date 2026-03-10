@@ -5,6 +5,7 @@ import {
   Bold,
   Check,
   Code,
+  CodeSquare,
   ExternalLink,
   Heading1,
   Heading2,
@@ -145,6 +146,30 @@ export function LinkBubbleMenu({ editor }: Props) {
       title: 'インラインコード',
       action: () => editor.chain().focus().toggleCode().run(),
       active: editor.isActive('code'),
+    },
+    {
+      icon: CodeSquare,
+      title: 'コードブロック',
+      action: () => {
+        if (editor.isActive('codeBlock')) {
+          editor.chain().focus().toggleCodeBlock().run();
+          return true;
+        }
+        const { from, to } = editor.state.selection;
+        const text = editor.state.doc.textBetween(from, to, '\n');
+        editor
+          .chain()
+          .focus()
+          .deleteSelection()
+          .insertContent({
+            type: 'codeBlock',
+            attrs: { language: null },
+            content: [{ type: 'text', text }],
+          })
+          .run();
+        return true;
+      },
+      active: editor.isActive('codeBlock'),
     },
     { separator: 'sep-1' },
     {
