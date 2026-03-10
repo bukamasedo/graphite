@@ -113,6 +113,8 @@
   "settings.fontFamilyDescription": "UI のフォントファミリー",
   "settings.editorFont": "エディタフォント",
   "settings.editorFontDescription": "エディタの等幅フォント",
+  "settings.codeBlockWordWrap": "コードブロックの折り返し",
+  "settings.codeBlockWordWrapDescription": "コードブロック内の長い行をスクロールではなく折り返して表示する",
   "settings.lineHeight": "行高",
   "settings.lineHeightDescription": "エディタのテキスト行間",
   "settings.editorPadding": "エディタ余白",

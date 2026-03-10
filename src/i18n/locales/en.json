@@ -113,6 +113,8 @@
   "settings.fontFamilyDescription": "UI font family",
   "settings.editorFont": "Editor Font",
   "settings.editorFontDescription": "Editor monospace font",
+  "settings.codeBlockWordWrap": "Code Block Word Wrap",
+  "settings.codeBlockWordWrapDescription": "Wrap long lines in code blocks instead of scrolling",
   "settings.lineHeight": "Line Height",
   "settings.lineHeightDescription": "Line spacing in the editor",
   "settings.editorPadding": "Editor Padding",

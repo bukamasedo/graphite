@@ -11,7 +11,6 @@ import TaskItem from '@tiptap/extension-task-item';
 import TaskList from '@tiptap/extension-task-list';
 import { EditorContent, ReactNodeViewRenderer, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import { common, createLowlight } from 'lowlight';
 import { useEffect, useRef } from 'react';
 import { Markdown } from 'tiptap-markdown';
 import { useEditorStore } from '@/stores/editor-store';
@@ -19,9 +18,8 @@ import { extractPreview, useNoteStore } from '@/stores/note-store';
 import { useSettingsStore } from '@/stores/settings-store';
 import { CodeBlockView } from './code-block-view';
 import { LinkBubbleMenu } from './link-bubble-menu';
+import { lowlight } from './lowlight';
 import { TrailingNewline } from './trailing-newline';
-
-const lowlight = createLowlight(common);
 
 interface Props {
   initialContent: string;
@@ -56,9 +54,9 @@ export function TiptapEditor({
               type: this.type,
               getAttributes: (match) => ({ language: match[1] }),
             }),
-            // ``` + space → code block (no language)
+            // ``` + space/enter → code block (no language)
             textblockTypeInputRule({
-              find: /^```\s$/,
+              find: /^```[\s\n]$/,
               type: this.type,
               getAttributes: () => ({ language: null }),
             }),
@@ -92,7 +90,7 @@ export function TiptapEditor({
       Markdown.configure({
         html: true,
         transformPastedText: true,
-        transformCopiedText: true,
+        transformCopiedText: false,
       }),
       TrailingNewline,
     ],
@@ -173,7 +171,7 @@ export function TiptapEditor({
 
   return (
     <div
-      className="tiptap-editor min-h-[50vh]"
+      className={`tiptap-editor min-h-[50vh]${settings.codeBlockWordWrap ? ' code-block-wrap' : ''}`}
       style={
         {
           fontSize: `${settings.fontSize}px`,

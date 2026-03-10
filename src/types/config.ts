@@ -7,6 +7,7 @@ export interface GraphiteConfig {
   lineHeight: number;
   editorPadding: number;
   spellCheck: boolean;
+  codeBlockWordWrap: boolean;
   sidebarWidth: number;
   noteListWidth: number;
   trashRetentionDays: number;
@@ -24,6 +25,7 @@ export const DEFAULT_CONFIG: GraphiteConfig = {
   lineHeight: 1.7,
   editorPadding: 24,
   spellCheck: false,
+  codeBlockWordWrap: false,
   sidebarWidth: 220,
   noteListWidth: 280,
   trashRetentionDays: 30,

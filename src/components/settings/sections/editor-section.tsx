@@ -35,6 +35,15 @@ export function EditorSection() {
         />
       </SettingRow>
       <SettingRow
+        label={t('settings.codeBlockWordWrap')}
+        description={t('settings.codeBlockWordWrapDescription')}
+      >
+        <Switch
+          checked={settings.codeBlockWordWrap}
+          onCheckedChange={(v) => updateSetting('codeBlockWordWrap', v)}
+        />
+      </SettingRow>
+      <SettingRow
         label={t('settings.lineHeight')}
         description={t('settings.lineHeightDescription')}
       >
