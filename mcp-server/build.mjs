@@ -45,7 +45,9 @@ execSync('node --experimental-sea-config sea-config.json', {
 // Step 4: Copy node binary and inject blob
 // Use NODE_BINARY_PATH env var to override (e.g., for cross-arch SEA builds)
 const nodePath = process.env.NODE_BINARY_PATH || process.execPath;
-const outputName = 'graphite-mcp';
+const isWindows = process.platform === 'win32';
+const isMacOS = process.platform === 'darwin';
+const outputName = isWindows ? 'graphite-mcp.exe' : 'graphite-mcp';
 const outputPath = resolve(__dirname, `dist/${outputName}`);
 
 const sentinelFuse = detectSentinelFuse(nodePath);
@@ -56,7 +58,7 @@ cpSync(nodePath, outputPath);
 chmodSync(outputPath, 0o755);
 
 // Remove signature (macOS)
-if (process.platform === 'darwin') {
+if (isMacOS) {
   try {
     execSync(`codesign --remove-signature "${outputPath}"`, {
       stdio: 'inherit',
@@ -67,13 +69,15 @@ if (process.platform === 'darwin') {
 }
 
 // Inject SEA blob
+// --macho-segment-name is only valid for macOS Mach-O binaries
+const machoFlag = isMacOS ? ' --macho-segment-name NODE_SEA' : '';
 execSync(
-  `npx postject "${outputPath}" NODE_SEA_BLOB dist/sea-prep.blob --sentinel-fuse ${sentinelFuse} --macho-segment-name NODE_SEA`,
+  `npx postject "${outputPath}" NODE_SEA_BLOB dist/sea-prep.blob --sentinel-fuse ${sentinelFuse}${machoFlag}`,
   { cwd: __dirname, stdio: 'inherit' }
 );
 
 // Re-sign (macOS)
-if (process.platform === 'darwin') {
+if (isMacOS) {
   try {
     execSync(`codesign --sign - "${outputPath}"`, { stdio: 'inherit' });
   } catch {
