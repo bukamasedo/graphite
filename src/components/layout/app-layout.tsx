@@ -181,7 +181,7 @@ export function AppLayout() {
                   panelRef={noteInfoRef}
                   id="noteinfo"
                   defaultSize="22%"
-                  minSize="15%"
+                  minSize="20%"
                   maxSize="35%"
                   collapsible
                   collapsedSize="0%"

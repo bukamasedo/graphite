@@ -14,6 +14,7 @@ export interface GraphiteConfig {
   language: 'en' | 'ja';
   hasSeenOnboarding: boolean;
   mcpClients: string[];
+  zoomLevel: number;
 }
 
 export const DEFAULT_CONFIG: GraphiteConfig = {
@@ -32,6 +33,7 @@ export const DEFAULT_CONFIG: GraphiteConfig = {
   language: 'en',
   hasSeenOnboarding: false,
   mcpClients: [],
+  zoomLevel: 1.0,
 };
 
 export interface HotkeyConfig {

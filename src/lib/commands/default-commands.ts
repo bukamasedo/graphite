@@ -1,8 +1,12 @@
+import { zoomApi } from '@/lib/api/zoom-api';
 import { useAppStore } from '@/stores/app-store';
 import { useHistoryStore } from '@/stores/history-store';
 import { useNoteStore } from '@/stores/note-store';
+import { useSettingsStore } from '@/stores/settings-store';
 import { useSidebarStore } from '@/stores/sidebar-store';
 import { commandRegistry } from './registry';
+
+const ZOOM_LEVELS = [0.5, 0.67, 0.75, 0.8, 0.9, 1.0, 1.1, 1.25, 1.5, 1.75, 2.0];
 
 export function setupDefaultCommands() {
   commandRegistry.register({
@@ -196,6 +200,60 @@ export function setupDefaultCommands() {
       document.dispatchEvent(
         new CustomEvent('graphite:delete-trash-permanently')
       );
+    },
+  });
+
+  commandRegistry.register({
+    id: 'view:zoom-in',
+    name: 'commands.zoomIn',
+    hotkey: 'Mod+=',
+    execute: () => {
+      const current = useSettingsStore.getState().settings.zoomLevel;
+      const idx = ZOOM_LEVELS.findIndex((l) => l > current);
+      const next =
+        idx === -1 ? ZOOM_LEVELS[ZOOM_LEVELS.length - 1] : ZOOM_LEVELS[idx];
+      if (next !== current) {
+        zoomApi
+          .setZoom(next)
+          .then(() => {
+            useSettingsStore.getState().updateSetting('zoomLevel', next);
+          })
+          .catch(() => {});
+      }
+    },
+  });
+
+  commandRegistry.register({
+    id: 'view:zoom-out',
+    name: 'commands.zoomOut',
+    hotkey: 'Mod+-',
+    execute: () => {
+      const current = useSettingsStore.getState().settings.zoomLevel;
+      const idx = [...ZOOM_LEVELS].reverse().findIndex((l) => l < current);
+      const next =
+        idx === -1 ? ZOOM_LEVELS[0] : ZOOM_LEVELS[ZOOM_LEVELS.length - 1 - idx];
+      if (next !== current) {
+        zoomApi
+          .setZoom(next)
+          .then(() => {
+            useSettingsStore.getState().updateSetting('zoomLevel', next);
+          })
+          .catch(() => {});
+      }
+    },
+  });
+
+  commandRegistry.register({
+    id: 'view:zoom-reset',
+    name: 'commands.zoomReset',
+    hotkey: 'Mod+0',
+    execute: () => {
+      zoomApi
+        .setZoom(1.0)
+        .then(() => {
+          useSettingsStore.getState().updateSetting('zoomLevel', 1.0);
+        })
+        .catch(() => {});
     },
   });
 

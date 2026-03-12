@@ -85,6 +85,9 @@ struct MenuLabels {
     zoom: String,
     close: String,
     settings: String,
+    zoom_in: String,
+    zoom_out: String,
+    zoom_reset: String,
 }
 
 impl Default for MenuLabels {
@@ -118,6 +121,9 @@ impl Default for MenuLabels {
             zoom: "Zoom".to_string(),
             close: "Close".to_string(),
             settings: "Settings...".to_string(),
+            zoom_in: "Zoom In".to_string(),
+            zoom_out: "Zoom Out".to_string(),
+            zoom_reset: "Actual Size".to_string(),
         }
     }
 }
@@ -213,6 +219,28 @@ fn build_menu_with_labels(
                 true,
                 Some("CmdOrCtrl+R"),
             )?,
+            &PredefinedMenuItem::separator(handle)?,
+            &MenuItem::with_id(
+                handle,
+                "view:zoom-in",
+                &labels.zoom_in,
+                true,
+                Some("CmdOrCtrl+="),
+            )?,
+            &MenuItem::with_id(
+                handle,
+                "view:zoom-out",
+                &labels.zoom_out,
+                true,
+                Some("CmdOrCtrl+-"),
+            )?,
+            &MenuItem::with_id(
+                handle,
+                "view:zoom-reset",
+                &labels.zoom_reset,
+                true,
+                Some("CmdOrCtrl+0"),
+            )?,
         ],
     )?;
 
@@ -271,10 +299,47 @@ fn build_menu_with_labels(
     )?)
 }
 
+/// Set the keyEquivalent of "Zoom In" menu item to "+" on macOS.
+/// muda cannot express this via accelerator strings, so we patch the NSMenuItem directly.
+#[cfg(target_os = "macos")]
+fn fix_zoom_in_accelerator() {
+    use objc2_app_kit::NSApplication;
+    use objc2_foundation::{MainThreadMarker, NSString};
+
+    let Some(mtm) = MainThreadMarker::new() else {
+        return;
+    };
+    let app = NSApplication::sharedApplication(mtm);
+    let Some(main_menu) = app.mainMenu() else {
+        return;
+    };
+    // Iterate top-level submenus to find the zoom-in item
+    for i in 0..main_menu.numberOfItems() {
+        let Some(top_item) = main_menu.itemAtIndex(i) else {
+            continue;
+        };
+        let Some(submenu) = top_item.submenu() else {
+            continue;
+        };
+        for j in 0..submenu.numberOfItems() {
+            let Some(item) = submenu.itemAtIndex(j) else {
+                continue;
+            };
+            if item.keyEquivalent().to_string() == "=" {
+                let plus = NSString::from_str("+");
+                item.setKeyEquivalent(&plus);
+                return;
+            }
+        }
+    }
+}
+
 #[tauri::command]
 fn rebuild_menu(app: AppHandle, labels: MenuLabels) -> Result<(), String> {
     let menu = build_menu_with_labels(&app, &labels).map_err(|e| e.to_string())?;
     app.set_menu(menu).map_err(|e| e.to_string())?;
+    #[cfg(target_os = "macos")]
+    fix_zoom_in_accelerator();
     Ok(())
 }
 
@@ -363,6 +428,8 @@ pub fn run() {
             match build_menu_with_labels(app.handle(), &labels) {
                 Ok(menu) => {
                     app.set_menu(menu)?;
+                    #[cfg(target_os = "macos")]
+                    fix_zoom_in_accelerator();
                 }
                 Err(e) => {
                     eprintln!("Failed to build menu: {}", e);

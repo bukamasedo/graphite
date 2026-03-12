@@ -43,6 +43,8 @@ function resolveKey(key: string): string {
       return 'Esc';
     case 'Backspace':
       return '⌫';
+    case '=':
+      return '+';
     default:
       return key;
   }
