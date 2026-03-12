@@ -122,7 +122,7 @@ a:hover {
 }
 
 .tiptap-editor .ProseMirror p {
-  margin-top: 0;
+  margin-top: 0 !important;
   margin-bottom: 6px;
 }
 
@@ -424,7 +424,103 @@ a:hover {
 /* Images */
 .tiptap-editor .ProseMirror img {
   max-width: 100%;
-  box-sizing: content-box;
+  border-radius: 6px;
+  margin: 8px 0;
+}
+
+.tiptap-editor .ProseMirror .image-view-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin: 8px auto;
+  user-select: none !important;
+}
+
+.tiptap-editor .ProseMirror .image-view-wrapper img {
+  max-width: 100%;
+  margin: 0;
+  display: block;
+  user-select: none !important;
+}
+
+.image-view-wrapper.ProseMirror-selectednode {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.image-resize-handle {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 40px;
+  background: #000;
+  border: 1px solid var(--text-muted);
+  border-radius: 2px;
+  cursor: col-resize;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.image-view-wrapper:hover .image-resize-handle,
+.image-view-wrapper.is-resizing .image-resize-handle {
+  opacity: 0.6;
+  pointer-events: auto;
+}
+
+.image-view-wrapper:hover .image-resize-handle:hover,
+.image-resize-handle:active,
+.image-view-wrapper.is-resizing .image-resize-handle {
+  opacity: 1;
+}
+
+.image-resize-handle-left {
+  left: 4px;
+}
+
+.image-resize-handle-right {
+  right: 4px;
+}
+
+.image-action-buttons {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.image-view-wrapper:hover .image-action-buttons {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.image-action-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.image-action-button:hover {
+  background: var(--accent-color);
+}
+
+.image-action-button--delete:hover {
+  background: rgba(220, 38, 38, 0.8);
 }
 
 /* Placeholder */

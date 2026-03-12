@@ -235,6 +235,9 @@
   "toast.exportFailed": "エクスポートに失敗しました",
   "toast.noteMoved": "ノートを移動しました",
   "toast.noteMoveFailed": "ノートの移動に失敗しました",
+  "toast.imageSaved": "画像を保存しました",
+  "toast.imageSaveFailed": "画像の保存に失敗しました",
+  "toast.imageTypeNotSupported": "この画像形式はサポートされていません",
 
   "statusBar.saved": "保存済み",
 

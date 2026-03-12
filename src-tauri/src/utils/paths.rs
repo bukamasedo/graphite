@@ -33,6 +33,10 @@ pub fn snippets_dir() -> Result<PathBuf, String> {
     Ok(graphite_config_dir()?.join("snippets"))
 }
 
+pub fn assets_dir() -> Result<PathBuf, String> {
+    Ok(graphite_config_dir()?.join("assets"))
+}
+
 pub fn relative_path(full_path: &str, base: &str) -> String {
     full_path
         .strip_prefix(base)

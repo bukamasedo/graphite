@@ -1,5 +1,6 @@
 import { open } from '@tauri-apps/plugin-shell';
 import type { Editor } from '@tiptap/core';
+import { NodeSelection } from '@tiptap/pm/state';
 import { BubbleMenu } from '@tiptap/react';
 import {
   Bold,
@@ -97,6 +98,7 @@ export function LinkBubbleMenu({ editor }: Props) {
 
   const shouldShow = ({ editor }: { editor: Editor }) => {
     if (!editor.isEditable) return false;
+    if (editor.state.selection instanceof NodeSelection) return false;
     if (editor.isActive('link')) return true;
     const { selection } = editor.state;
     return !selection.empty && !editor.isActive('codeBlock');

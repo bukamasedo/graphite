@@ -235,6 +235,9 @@
   "toast.exportFailed": "Export failed",
   "toast.noteMoved": "Note moved",
   "toast.noteMoveFailed": "Failed to move note",
+  "toast.imageSaved": "Image saved",
+  "toast.imageSaveFailed": "Failed to save image",
+  "toast.imageTypeNotSupported": "This image format is not supported",
 
   "statusBar.saved": "Saved",
 
