@@ -48,12 +48,6 @@ export function AppLayout() {
   }, [noteListVisible, noteListRef.current]);
 
   useEffect(() => {
-    if (activeNote && !noteInfoVisible) {
-      useAppStore.getState().toggleNoteInfo();
-    }
-  }, [activeNote, noteInfoVisible]);
-
-  useEffect(() => {
     const panel = noteInfoRef.current;
     if (!panel) return;
     if (noteInfoVisible && activeNote) {

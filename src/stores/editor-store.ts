@@ -1,5 +1,6 @@
 import type { Editor } from '@tiptap/react';
 import { create } from 'zustand';
+import { assetApi } from '@/lib/api/asset-api';
 
 interface EditorState {
   lineNumber: number;
@@ -13,6 +14,8 @@ interface EditorState {
   setWordCount: (words: number, chars: number) => void;
   setDirty: (dirty: boolean) => void;
   setEditor: (editor: Editor | null) => void;
+  saveImage: (sourcePath: string) => Promise<string>;
+  saveImageFromBytes: (bytes: number[], extension: string) => Promise<string>;
 }
 
 export const useEditorStore = create<EditorState>((set) => ({
@@ -27,4 +30,7 @@ export const useEditorStore = create<EditorState>((set) => ({
   setWordCount: (words, chars) => set({ wordCount: words, charCount: chars }),
   setDirty: (dirty) => set({ dirty }),
   setEditor: (editor) => set({ editor }),
+  saveImage: (sourcePath) => assetApi.saveImage(sourcePath),
+  saveImageFromBytes: (bytes, extension) =>
+    assetApi.saveImageFromBytes(bytes, extension),
 }));

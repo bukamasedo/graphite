@@ -12,11 +12,15 @@ import TaskList from '@tiptap/extension-task-list';
 import { EditorContent, ReactNodeViewRenderer, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import { Markdown } from 'tiptap-markdown';
+import { useAppStore } from '@/stores/app-store';
 import { useEditorStore } from '@/stores/editor-store';
 import { extractPreview, useNoteStore } from '@/stores/note-store';
 import { useSettingsStore } from '@/stores/settings-store';
 import { CodeBlockView } from './code-block-view';
+import { GraphiteImage } from './graphite-image';
 import { LinkBubbleMenu } from './link-bubble-menu';
 import { lowlight } from './lowlight';
 import { TrailingNewline } from './trailing-newline';
@@ -34,9 +38,11 @@ export function TiptapEditor({
 }: Props) {
   const saveTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const heavyUpdateTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const { t } = useTranslation();
   const { setDirty, setCursorPosition, setWordCount, setEditor } =
     useEditorStore();
   const settings = useSettingsStore((s) => s.settings);
+  const vaultPath = useAppStore((s) => s.vaultPath);
   const onSaveRef = useRef(onSave);
   onSaveRef.current = onSave;
 
@@ -44,6 +50,7 @@ export function TiptapEditor({
     extensions: [
       StarterKit.configure({
         codeBlock: false,
+        dropcursor: { color: 'var(--accent-color)', width: 2 },
       }),
       CodeBlockLowlight.extend({
         addInputRules() {
@@ -87,6 +94,11 @@ export function TiptapEditor({
       TableRow,
       TableCell,
       TableHeader,
+      GraphiteImage.configure({
+        vaultPath,
+        inline: false,
+        allowBase64: false,
+      }),
       Markdown.configure({
         html: true,
         transformPastedText: true,
@@ -101,6 +113,59 @@ export function TiptapEditor({
       attributes: {
         class: 'tiptap-editor-content',
         spellcheck: String(settings.spellCheck),
+      },
+      handlePaste: (view, event) => {
+        const items = event.clipboardData?.files;
+        if (!items?.length) return false;
+
+        const imageFile = Array.from(items).find((f) =>
+          f.type.startsWith('image/')
+        );
+        if (!imageFile) return false;
+
+        const ext = imageFile.type.split('/')[1]?.replace('jpeg', 'jpg');
+        if (!ext) return false;
+
+        const insertPos = view.state.selection.from;
+
+        imageFile
+          .arrayBuffer()
+          .then((buf) => {
+            const bytes = Array.from(new Uint8Array(buf));
+            return useEditorStore.getState().saveImageFromBytes(bytes, ext);
+          })
+          .then((relativePath) => {
+            editor
+              ?.chain()
+              .focus()
+              .insertContentAt(insertPos, {
+                type: 'image',
+                attrs: { src: relativePath },
+              })
+              .run();
+          })
+          .catch(() => {
+            toast.error(t('toast.imageSaveFailed'));
+          });
+
+        return true;
+      },
+      handleDrop: (_view, event) => {
+        // Tauri synthetic drop — useImageDrop handles insertion
+        if (event.dataTransfer?.getData('application/x-tauri-drop')) {
+          return true;
+        }
+        // Browser drop guard (safety net)
+        const files = event.dataTransfer?.files;
+        if (!files?.length) return false;
+        const hasImage = Array.from(files).some((f) =>
+          f.type.startsWith('image/')
+        );
+        if (hasImage) {
+          event.preventDefault();
+          return true;
+        }
+        return false;
       },
     },
     onUpdate: ({ editor }) => {

@@ -1,5 +1,6 @@
 import { FileText } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useImageDrop } from '@/hooks/use-image-drop';
 import { useAppStore } from '@/stores/app-store';
 import { useNoteStore } from '@/stores/note-store';
 import { EmptyState } from '../common/empty-state';
@@ -21,6 +22,7 @@ function NoteEditorArea() {
   const { t } = useTranslation();
   const activeNote = useNoteStore((s) => s.activeNote);
   const createNote = useNoteStore((s) => s.createNote);
+  useImageDrop();
 
   return (
     <div

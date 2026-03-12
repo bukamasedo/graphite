@@ -319,6 +319,9 @@ pub fn run() {
             commands::mcp_commands::get_mcp_binary_path,
             commands::mcp_commands::configure_mcp_client,
             commands::mcp_commands::remove_mcp_client,
+            commands::asset_commands::save_image,
+            commands::asset_commands::save_image_from_bytes,
+            commands::asset_commands::export_image,
             rebuild_menu,
         ])
         .setup(|app| {

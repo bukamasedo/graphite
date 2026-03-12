@@ -23,11 +23,18 @@
         "decorations": true,
         "titleBarStyle": "Overlay",
         "hiddenTitle": true,
-        "dragDropEnabled": false
+        "dragDropEnabled": true
       }
     ],
     "security": {
-      "csp": null
+      "csp": null,
+      "assetProtocol": {
+        "enable": true,
+        "scope": {
+          "allow": ["$HOME/Graphite/.graphite/assets/**"],
+          "requireLiteralLeadingDot": false
+        }
+      }
     }
   },
   "plugins": {

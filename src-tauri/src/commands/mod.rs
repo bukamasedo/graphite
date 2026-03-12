@@ -1,3 +1,4 @@
+pub mod asset_commands;
 pub mod config_commands;
 pub mod export_commands;
 pub mod folder_commands;
