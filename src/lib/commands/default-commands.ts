@@ -213,8 +213,12 @@ export function setupDefaultCommands() {
       const next =
         idx === -1 ? ZOOM_LEVELS[ZOOM_LEVELS.length - 1] : ZOOM_LEVELS[idx];
       if (next !== current) {
-        zoomApi.setZoom(next);
-        useSettingsStore.getState().updateSetting('zoomLevel', next);
+        zoomApi
+          .setZoom(next)
+          .then(() => {
+            useSettingsStore.getState().updateSetting('zoomLevel', next);
+          })
+          .catch(() => {});
       }
     },
   });
@@ -229,8 +233,12 @@ export function setupDefaultCommands() {
       const next =
         idx === -1 ? ZOOM_LEVELS[0] : ZOOM_LEVELS[ZOOM_LEVELS.length - 1 - idx];
       if (next !== current) {
-        zoomApi.setZoom(next);
-        useSettingsStore.getState().updateSetting('zoomLevel', next);
+        zoomApi
+          .setZoom(next)
+          .then(() => {
+            useSettingsStore.getState().updateSetting('zoomLevel', next);
+          })
+          .catch(() => {});
       }
     },
   });
@@ -240,8 +248,12 @@ export function setupDefaultCommands() {
     name: 'commands.zoomReset',
     hotkey: 'Mod+0',
     execute: () => {
-      zoomApi.setZoom(1.0);
-      useSettingsStore.getState().updateSetting('zoomLevel', 1.0);
+      zoomApi
+        .setZoom(1.0)
+        .then(() => {
+          useSettingsStore.getState().updateSetting('zoomLevel', 1.0);
+        })
+        .catch(() => {});
     },
   });
 

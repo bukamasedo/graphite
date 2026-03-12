@@ -62,7 +62,7 @@ export function App() {
       trashApi.purgeExpiredTrash(trashRetentionDays).catch(() => {});
       i18n.changeLanguage(language).then(() => syncNativeMenu());
       if (zoomLevel !== 1.0) {
-        zoomApi.setZoom(zoomLevel);
+        zoomApi.setZoom(zoomLevel).catch(() => {});
       }
     });
     init().then(() => loadNotes());
