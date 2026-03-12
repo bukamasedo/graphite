@@ -164,6 +164,9 @@
   "commands.historyBack": "Back",
   "commands.historyForward": "Forward",
   "commands.showHistory": "Show History",
+  "commands.zoomIn": "Zoom In",
+  "commands.zoomOut": "Zoom Out",
+  "commands.zoomReset": "Actual Size",
 
   "commandGroups.global": "Global",
   "commandGroups.globalDesc": "Active everywhere",
@@ -210,6 +213,9 @@
   "menu.historyBack": "Back",
   "menu.historyForward": "Forward",
   "menu.showHistory": "Show History",
+  "menu.zoomIn": "Zoom In",
+  "menu.zoomOut": "Zoom Out",
+  "menu.zoomReset": "Actual Size",
 
   "errors.folderAlreadyExists": "Folder already exists",
   "errors.folderNotExist": "Folder does not exist",

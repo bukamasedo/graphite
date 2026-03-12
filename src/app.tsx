@@ -25,6 +25,7 @@ import { UpdateToast } from './components/update-toast';
 import { useCommandHotkeys } from './hooks/use-command-hotkeys';
 import { useCustomCSS } from './hooks/use-custom-css';
 import { usePanelNavigation } from './hooks/use-panel-navigation';
+import { zoomApi } from './lib/api/zoom-api';
 import { setupDefaultCommands } from './lib/commands/default-commands';
 import {
   commandRegistry,
@@ -56,10 +57,13 @@ export function App() {
     setupDefaultCommands();
     loadHotkeys().then(() => loadCorePlugins());
     loadSettings().then(() => {
-      const { trashRetentionDays, language } =
+      const { trashRetentionDays, language, zoomLevel } =
         useSettingsStore.getState().settings;
       trashApi.purgeExpiredTrash(trashRetentionDays).catch(() => {});
       i18n.changeLanguage(language).then(() => syncNativeMenu());
+      if (zoomLevel !== 1.0) {
+        zoomApi.setZoom(zoomLevel);
+      }
     });
     init().then(() => loadNotes());
 

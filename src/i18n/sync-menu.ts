@@ -34,6 +34,9 @@ export async function syncNativeMenu() {
       zoom: t('menu.zoom'),
       close: t('menu.close'),
       settings: t('menu.settings'),
+      zoom_in: t('menu.zoomIn'),
+      zoom_out: t('menu.zoomOut'),
+      zoom_reset: t('menu.zoomReset'),
     });
   } catch (e) {
     console.error('Failed to sync native menu:', e);

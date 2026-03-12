@@ -164,6 +164,9 @@
   "commands.historyBack": "戻る",
   "commands.historyForward": "進む",
   "commands.showHistory": "履歴を表示",
+  "commands.zoomIn": "拡大",
+  "commands.zoomOut": "縮小",
+  "commands.zoomReset": "実際のサイズ",
 
   "commandGroups.global": "グローバル",
   "commandGroups.globalDesc": "どこでも有効",
@@ -210,6 +213,9 @@
   "menu.historyBack": "戻る",
   "menu.historyForward": "進む",
   "menu.showHistory": "履歴を表示",
+  "menu.zoomIn": "拡大",
+  "menu.zoomOut": "縮小",
+  "menu.zoomReset": "実際のサイズ",
 
   "errors.folderAlreadyExists": "フォルダはすでに存在します",
   "errors.folderNotExist": "フォルダが存在しません",
